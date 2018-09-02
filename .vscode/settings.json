@@ -1,0 +1,8 @@
+{
+    "todo-tree.flat": true,
+    "files.associations": {
+        "vector": "cpp"
+    },
+    "editor.fontFamily": "'Courier New'",
+    "editor.fontSize": 15
+}

@@ -1,0 +1,833 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_NEUTRAL
+#pragma code_page(936)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "用户中心(&U)"
+    BEGIN
+        MENUITEM "用户信息",                        ID_32869
+        MENUITEM "修改密码",                        ID_32872
+        MENUITEM SEPARATOR
+        MENUITEM "用户管理",                        ID_32871
+        MENUITEM SEPARATOR
+        MENUITEM "退出",                          ID_APP_EXIT
+    END
+    POPUP " 气象产品"
+    BEGIN
+        POPUP "原始信号"
+        BEGIN
+            MENUITEM "CH1-光子",                      ID_PRODUCT_SIGNAL_1ST
+            MENUITEM "CH2-光子",                      ID_PRODUCT_SIGNAL_3RD
+            MENUITEM "CH3-光子",                      ID_PRODUCT_SIGNAL_5TH
+        END
+        POPUP "消光系数"
+        BEGIN
+            MENUITEM "CH1-光子",                      ID_PRODUCT_EXTINCTIONCOEFFICIENT_1ST
+            MENUITEM "CH2-光子",                      ID_PRODUCT_EXTINCTIONCOEFFICIENT_3RD
+            MENUITEM "CH3-光子",                      ID_PRODUCT_EXTINCTIONCOEFFICIENT_5TH
+        END
+        MENUITEM "退偏振比",                        ID_PRODUCT_DEPOLAR_RATIO
+        MENUITEM SEPARATOR
+        MENUITEM "光学厚度",                        ID_PRODUCT_OPTICDEPTH
+        MENUITEM "边界层高度",                       ID_PRODUCT_ATMOSBOUNDARY
+        POPUP "云信息"
+        BEGIN
+            MENUITEM "CH1-光子",                      ID_PRODUCT_CLOUD_1ST
+            MENUITEM "CH2-光子",                      ID_PRODUCT_CLOUD_3RD
+            MENUITEM "CH3-光子",                      ID_PRODUCT_CLOUD_5TH
+        END
+        MENUITEM "垂直能见度",                       ID_PRODUCT_VISIBLE
+        MENUITEM "污染物混合层高度",                    ID_PRODUCT_MIXHEIGHT
+        MENUITEM "颗粒物质量浓度",                     ID_PRODUCT_MASSCONCENTRATION
+    END
+    POPUP "历史数据(&D)"
+    BEGIN
+        MENUITEM "本地文件",                        ID_DATA_LOCALFILES
+    END
+    POPUP "数据采集(&P)"
+    BEGIN
+        MENUITEM "定向采集",                        ID_CAPTURE_SINGLE
+        MENUITEM "计划采集",                        ID_CAPTURE_SCHEDULER
+    END
+    POPUP "工具(&T)"
+    BEGIN
+        MENUITEM "采集计划编辑器",                     ID_TOOL_TASKEDITOR
+        MENUITEM "数据推送工具",                      ID_TOOL_DATATRANSFER
+    END
+    POPUP "选项(&O)"
+    BEGIN
+        MENUITEM "保存路径",                        ID_OPTION_SAVE
+        MENUITEM SEPARATOR
+        MENUITEM "高级选项",                        ID_OPTION_ADVANCE
+    END
+    POPUP "帮助(&H)"
+    BEGIN
+        MENUITEM "关于(&A)",                      ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
+    IDS_BASE_PRODUCTS       "基础产品\n选择一个基础产品"
+    IDS_DATA_SRC            "历史数据\n进行历史数据浏览"
+    IDS_OPTIONS             "选项\n选项"
+    ID_PRODUCT_DEPOLAR_RATIO "退偏振比\n绘制退偏振比"
+    IDS_CUSTOM_DISPLAY      "高级产品\n选择一个高级产品"
+    ID_INDICATOR_DOWNLOAD   "DOWNLOAD"
+    ID_INDICATOR_ANGLE      "ANGLE"
+    ID_INDICATOR_LASER      "LASER"
+    IDS_TOOLS               "工具\n工具"
+    ID_INDICATOR_SEARCHRESULT "搜索结果"
+    ID_INDICATOR_TASKPROGRESS "进度"
+END
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "拉曼雷达数据采集软件\n\nradar_wsp\n\n\nradarwsp.Document\nradar_wsp.Document"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "radar_wsp"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
+END
+
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "数据采集\n进行数据采集"
+END
+
+STRINGTABLE
+BEGIN
+    ID_DATA_LOCALFILES      "本地文件\n使用本地文件作为数据源"
+    ID_DATA_DATABASE        "数据库\n使用数据库作为数据源"
+    ID_PRODUCT_SIGNAL_1ST   "原始信号-CH1光子\n绘制CH1光子原始信号"
+    ID_PRODUCT_SIGNAL_2ND   "原始信号-CH1模拟\n绘制CH1模拟原始信号"
+    ID_PRODUCT_ADDCUSTOMPRODUCTDISPLAYSTYLE "自定义产品布局\n自定义产品布局"
+END
+
+STRINGTABLE
+BEGIN
+    ID_OPTION_ACQUIREADAPTER "网卡设置\n选择进行数据采集的网卡"
+    ID_PRODUCT_EXTINCTIONCOEFFICIENT_1ST "消光系数-CH1光子\n绘制CH1光子消光系数"
+    ID_PRODUCT_EXTINCTIONCOEFFICIENT_2ND "消光系数-CH1模拟\n绘制CH1模拟消光系数"
+    ID_DATA_REALTIMEACQUIRE "定向采集\n定向采集"
+    ID_OPTION_ACQUIREPARAMETERS "采集参数\n设置参数参数"
+END
+
+STRINGTABLE
+BEGIN
+    ID_DATA_TASKACQUIRE     "PPI采集\nPPI采集"
+    ID_OPTION_DBCONFIG      "数据库配置\n数据库配置"
+END
+
+STRINGTABLE
+BEGIN
+    ID_PRODUCT_CLOUD        "云信息\n云信息绘制"
+    ID_LASER_READY          "准备\n激光器准备"
+END
+
+STRINGTABLE
+BEGIN
+    ID_LASER_START          "开始\n激光器开始"
+    ID_LASER_Q              "调Q\n激光器调Q"
+    ID_LASER_STRENGTH       "光强\n激光器光强"
+    ID_LASER_STOP           "停止\n停止发射激光"
+    ID_LASER_COM            "通信端口\n通信端口"
+    ID_TOOL_SERVO           "伺服控制器\n伺服控制器工具"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_LINKSTATE  "DB连接状态"
+    ID_INDICATOR_SOURCE     "数据源状态"
+    IDS_CAPTURE             "数据采集\n进行数据采集"
+    ID_INDICATOR_MAINPROGRESS "主进度"
+    IDS_WORKFLOW_EXTINCCOE  "正在进行消光系数的渲染..."
+    IDS_WORKFLOW_DEPOLAR    "正在进行退偏振比的渲染..."
+    IDS_WORKFLOW_LOADDATA   "正在载入数据..."
+    IDR_ADVANCEDPRODUCTTYPE "衍生产品\n\nadvancedproduct\n\n\nadvancedproduct.Document\nadvancedproduct.Document"
+    ID_INDICATOR_MOUSEPOS   "游标位置"
+    ID_PRODUCT_MIXHEIGHT    "污染物混合层高度\n绘制污染物混合层高度"
+END
+
+STRINGTABLE
+BEGIN
+    ID_CAPTURE_SINGLE       "定向采集\n对某个角度进行定向采集"
+    ID_PRODUCT_SIGNAL_3RD   "原始信号-CH2光子\n绘制光子CH2原始信号"
+    ID_PRODUCT_EXTINCTIONCOEFFICIENT_3RD "消光系数-CH2光子\n绘制CH2光子消光系数"
+END
+
+STRINGTABLE
+BEGIN
+    ID_TOOL_SIM             "模拟源\n使用模拟源模拟采集卡"
+    ID_CAPTURE_PPI          "扫描采集\n进行扫描采集"
+    ID_OPTION_SAVE          "数据保存\n设置采集数据保存"
+    ID_OPTION_ADVANCE       "高级选项\n高级选项"
+END
+
+STRINGTABLE
+BEGIN
+    ID_PRODUCT_MASSCONCENTRATION "颗粒物质量浓度\n绘制颗粒物质量浓度"
+    ID_32886                "光学厚度-532nm垂直\n绘制532nm垂直光学厚度"
+    ID_PRODUCT_OPTICDEPTH_1ST "光学厚度-532nm垂直\n绘制532nm垂直光学厚度"
+END
+
+STRINGTABLE
+BEGIN
+    ID_PRODUCT_OPTICDEPTH_2ND "光学厚度-532nm平行\n绘制532nm平行光学厚度"
+    ID_PRODUCT_OPTICDEPTH_3RD "光学厚度-355nm\n绘制355nm光学厚度"
+    ID_PRODUCT_ATMOSBOUNDARY_1ST "大气边界层-532nm垂直\n绘制532nm垂直大气边界层"
+    ID_PRODUCT_ATMOSBOUNDARY_2ND "大气边界层-532nm平行\n绘制532nm平行大气边界层"
+    ID_PRODUCT_ATMOSBOUNDARY_3RD "大气边界层-355nm\n绘制355nm大气边界层"
+    ID_PRODUCT_CLOUD_1ST    "云信息-CH1光子\n绘制CH1光子云信息"
+    ID_PRODUCT_CLOUD_2ND    "云信息-CH1模拟\n绘制CH1模拟云信息"
+    ID_PRODUCT_CLOUD_3RD    "云信息-CH2光子\n绘制CH2光子云信息"
+    ID_PRODUCT_VISIBLE_1ST  "垂直能见度-532nm垂直\n绘制532nm垂直垂直能见度"
+    ID_PRODUCT_VISIBLE_2ND  "垂直能见度-532nm平行\n绘制532nm平行垂直能见度"
+    ID_PRODUCT_VISIBLE_3RD  "垂直能见度-355nm\n绘制355nm垂直能见度"
+END
+
+STRINGTABLE
+BEGIN
+    ID_PRODUCT_OPTICDEPTH   "光学厚度\n绘制光学厚度曲线"
+    ID_PRODUCT_ATMOSBOUNDARY "边界层高度\n绘制边界层高度曲线"
+    ID_PRODUCT_VISIBLE      "垂直能见度\n绘制垂直能见度曲线"
+END
+
+STRINGTABLE
+BEGIN
+    ID_TOOL_PPI             "扫描显示器\n打开扫描显示器"
+    ID_CAPTURE_TASK         "计划采集\n进行计划采集"
+    ID_TOOL_TASKEDITOR      "采集计划编辑器\n打开采集计划编辑器"
+END
+
+STRINGTABLE
+BEGIN
+    ID_TOOL_DATATRANSFER    "数据推送工具\n打开数据推送工具"
+    ID_CAPTURE_SCHEDULER    "计划采集\n打开计划采集"
+    ID_CAPTURE_RHI          "RHI采集\n进行RHI采集"
+END
+
+STRINGTABLE
+BEGIN
+    ID_TOOL_CAMERA          "伺服相机\n打开伺服相机"
+    ID_TOOL_SCANDISPLAY     "扫描显示器\n打开扫描显示器"
+    ID_CAPTURE_SCAN         "扫描采集\n进行扫描采集"
+    ID_PRODUCT_SIGNAL_4TH   "原始信号-CH2模拟\n绘制模拟CH2原始信号"
+    ID_PRODUCT_EXTINCTIONCOEFFICIENT_4TH "消光系数-CH2模拟\n绘制CH2模拟消光系数"
+    ID_32969                "云信息-CH2模拟\n绘制CH2模拟云信息"
+    ID_PRODUCT_CLOUD_4TH    "云信息-CH2模拟\n绘制CH2模拟云信息"
+    ID_PRODUCT_SIGNAL_5TH   "原始信号-CH3光子\n绘制光子CH3原始信号"
+    ID_PRODUCT_SIGNAL_6TH   "原始信号-CH3模拟\n绘制模拟CH3原始信号"
+END
+
+STRINGTABLE
+BEGIN
+    ID_PRODUCT_EXTINCTIONCOEFFICIENT_5RD "消光系数-CH2光子\n绘制CH2光子消光系数"
+    ID_PRODUCT_EXTINCTIONCOEFFICIENT_6TH "消光系数-CH3模拟\n绘制CH3模拟消光系数"
+    ID_PRODUCT_EXTINCTIONCOEFFICIENT_5TH "消光系数-CH3光子\n绘制CH3光子消光系数"
+    ID_PRODUCT_CLOUD_5TH    "云信息-CH3光子\n绘制CH3光子云信息"
+    ID_PRODUCT_CLOUD_6TH    "云信息-CH3模拟\n绘制CH3模拟云信息"
+END
+
+#endif    // 中文(简体) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_AXISMENU MENU
+BEGIN
+    POPUP "Context Menu"
+    BEGIN
+        MENUITEM "X轴",                          ID_AXISCONFIGURE_HORIZONTALAXIS
+        MENUITEM "Y轴",                          ID_AXISCONFIGURE_VERTICALAXIS
+        MENUITEM "色条",                          ID_AXISCONFIGURE_LEVELAXIS
+        MENUITEM SEPARATOR
+        MENUITEM "缩放复位",                        ID_AXISCONFIGURE_AXISALLRESET
+        MENUITEM SEPARATOR
+        MENUITEM "导出为图片",                       ID_AXISCONFIGURE_EXPORTIMG
+        MENUITEM "导出为Excel",                    ID_AXISCONFIGURE_EXPORTEXCEL
+        MENUITEM "表格查看",                        ID_AXISCONFIGURE_TABLE
+        MENUITEM SEPARATOR
+        MENUITEM "355nm",                       ID_AXISCONFIGURE_CH1, CHECKED
+        MENUITEM "532nm垂直",                     ID_AXISCONFIGURE_CH2, CHECKED
+        MENUITEM "532nm平行",                     ID_AXISCONFIGURE_CH3, CHECKED
+    END
+END
+
+IDR_TASKMENU MENU
+BEGIN
+    POPUP "计划"
+    BEGIN
+        MENUITEM "新建",                          ID_SCHEDULE_NEW
+        MENUITEM "打开",                          ID_SCHEDULE_OPEN
+        MENUITEM "保存",                          ID_SCHEDULE_SAVE
+        MENUITEM "另存为",                         ID_SCHEDULE_SAVEAS
+        MENUITEM SEPARATOR
+        MENUITEM "退出",                          ID_32939
+    END
+    POPUP "子任务"
+    BEGIN
+        MENUITEM "新建",                          ID_SUBTASK_NEW
+        MENUITEM "保存",                          ID_SUBTASK_SAVE
+        MENUITEM "删除",                          ID_SUBTASK_DELETE
+    END
+    MENUITEM "帮助",                          ID_32944
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_RADARFORMVIEW DIALOGEX 0, 0, 294, 222
+STYLE DS_SETFONT | WS_CHILD
+FONT 12, "华文中宋", 400, 0, 0x86
+BEGIN
+END
+
+IDD_DATABROWERDLG DIALOGEX 0, 0, 606, 313
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "历史数据浏览"
+FONT 12, "微软雅黑", 400, 0, 0x86
+BEGIN
+    CONTROL         "",IDC_RECORDLIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,77,419,216
+    LTEXT           "本地目录:",IDC_STATIC,15,15,30,10
+    EDITTEXT        IDC_EDIT_PATH,47,12,340,12,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "检索",IDC_SEARCH,391,7,37,13
+    CONTROL         "",IDC_DATESTARTPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,47,28,51,12
+    LTEXT           "至",IDC_STATIC,142,30,9,8
+    CONTROL         "",IDC_DATEENDPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,153,28,51,12
+    PUSHBUTTON      "展示产品",IDOK,391,22,37,13
+    LTEXT           "Static",IDC_PLOTSTATIC,430,4,168,289,WS_BORDER
+    CONTROL         "",IDC_TIMESTARTPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_UPDOWN | WS_TABSTOP | 0x8,98,28,42,12
+    CONTROL         "",IDC_TIMEENDPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_UPDOWN | WS_TABSTOP | 0x8,204,28,42,12
+    DEFPUSHBUTTON   "一小时",IDC_BTN_HOUR,248,28,35,13
+    DEFPUSHBUTTON   "12小时",IDC_BTN_HALFDAY,318,28,35,13
+    DEFPUSHBUTTON   "24小时",IDC_BTN_DAY,353,28,35,13
+    LTEXT           "采集时间:",IDC_STATIC,15,30,30,8
+    COMBOBOX        IDC_COMBO_STATION,145,44,44,53,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_CONDUCTOR2,239,44,44,52,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "检索条件",IDC_STATIC,7,4,383,55
+    PUSHBUTTON      "在结果中检索",IDC_BTN_SEARCHRESULT,43,62,51,13
+    LTEXT           "检索结果:",IDC_STATIC,9,65,32,8
+    LTEXT           "采样周期(s):",IDC_STATIC,15,46,38,8
+    LTEXT           "采集站点:",IDC_STATIC,113,46,31,8
+    LTEXT           "操作者:",IDC_STATIC,213,46,25,8
+    DEFPUSHBUTTON   "6小时",IDC_BTN_SIXHOUR,283,28,35,13
+    COMBOBOX        IDC_COMBO_PERIOD,53,44,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_AXISSETTINGSDLG DIALOGEX 0, 0, 104, 70
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "坐标轴设置"
+FONT 12, "微软雅黑", 400, 0, 0x86
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,29,49,44,14
+    EDITTEXT        IDC_MINEDIT,39,7,53,12,ES_AUTOHSCROLL
+    LTEXT           "最小值：",IDC_STATIC,7,7,28,8
+    LTEXT           "最大值:",IDC_STATIC,7,23,25,8
+    EDITTEXT        IDC_MAXEDIT,39,21,53,12,ES_AUTOHSCROLL
+    CONTROL         "对数坐标",IDC_LOGCHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,39,35,48,10
+END
+
+IDD_CAPTURESETTINGDLG DIALOGEX 0, 0, 132, 26
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "数据采集"
+FONT 12, "微软雅黑", 400, 0, 0x86
+BEGIN
+    LTEXT           "采样周期:",IDC_STATIC,9,8,30,8
+    PUSHBUTTON      "设置",IDOK,94,7,31,12
+    COMBOBOX        IDC_COMBO_PERIOD,43,7,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_SAVESETTINGSDLG DIALOGEX 0, 0, 291, 27
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "存储位置配置"
+FONT 12, "微软雅黑", 400, 0, 0x86
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,244,6,40,14
+    COMBOBOX        IDC_COMBO_SAVESTYLE,41,7,54,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "存储位置:",IDC_STATIC,10,8,30,8
+    EDITTEXT        IDC_EDIT_SAVEPATH,97,7,146,12,ES_AUTOHSCROLL | ES_READONLY
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 191, 37
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于气溶胶雷达数据采集软件"
+FONT 12, "微软雅黑", 400, 0, 0x86
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,11,13,12
+    LTEXT           "拉曼雷达数据采集软件 V1.0",IDC_STATIC,30,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2018",IDC_STATIC,31,20,119,8
+    DEFPUSHBUTTON   "确定",IDOK,146,7,38,12,WS_GROUP
+END
+
+IDD_LOGINDLG DIALOGEX 0, 0, 175, 122
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "用户登录"
+FONT 12, "微软雅黑", 400, 0, 0x86
+BEGIN
+    DEFPUSHBUTTON   "登陆",IDC_BUTTON_LOGIN,95,104,43,12
+    LTEXT           "用户名:",IDC_STATIC,72,57,22,8
+    LTEXT           "密码:",IDC_STATIC,72,73,16,8
+    ICON            "",IDC_STATIC_LOGIN,7,52,13,12
+    EDITTEXT        IDC_EDIT_LOGINUSR,97,55,70,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_LOGINPWD,97,71,70,12,ES_PASSWORD | ES_AUTOHSCROLL
+    CONTROL         "以临时用户身份登陆",IDC_CHECK_DBUSR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,86,71,10
+    CONTROL         "",IDC_STATIC_CAPTION,"Static",SS_BITMAP,0,0,11,9
+    GROUPBOX        "登陆验证",IDC_STATIC,63,46,109,52
+    RTEXT           "Static",IDC_STATIC_LOGININFO,18,107,75,8
+END
+
+IDD_ADVANCEDPRODUCTVIEW DIALOGEX 0, 0, 298, 210
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "宋体", 400, 0, 0x0
+BEGIN
+END
+
+IDD_TASKEDITDLG DIALOGEX 0, 0, 509, 254
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "采集计划编辑器"
+MENU IDR_TASKMENU
+FONT 10, "微软雅黑", 400, 0, 0x86
+BEGIN
+    LISTBOX         IDC_SUBTASKLIST,7,7,94,240,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "gantt",IDC_GANTTCHART,"XTPChartControl",WS_TABSTOP,103,7,399,199
+    GROUPBOX        "子任务配置",IDC_STATIC,103,208,399,39
+    COMBOBOX        IDC_COMBO_MODE,224,220,54,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "采集模式:",IDC_STATIC,193,221,29,8
+    LTEXT           "初始方位角:",IDC_STATIC,378,220,35,8
+    LTEXT           "初始俯仰角:",IDC_STATIC,378,234,35,8
+    COMBOBOX        IDC_COMBO_REPEAT,224,233,25,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "重复类型:",IDC_STATIC,193,234,29,8
+    EDITTEXT        IDC_EDIT_INITFW,416,219,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_INITFY,416,232,40,12,ES_AUTOHSCROLL
+    LTEXT           "步进角度:",IDC_STATIC,287,221,29,8
+    EDITTEXT        IDC_EDIT_STEP,326,219,40,12,ES_AUTOHSCROLL
+    LTEXT           "采样周期(s):",IDC_STATIC,287,234,36,8
+    EDITTEXT        IDC_EDIT_PERIOD,326,232,40,12,ES_AUTOHSCROLL
+    LTEXT           "开始时间:",IDC_STATIC,113,221,29,8
+    LTEXT           "结束时间:",IDC_STATIC,113,234,29,8
+    CONTROL         "",IDC_TIMEPICKER_START,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_UPDOWN | WS_TABSTOP | 0x8,145,220,39,11
+    CONTROL         "",IDC_TIMEPICKER_END,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_UPDOWN | WS_TABSTOP | 0x8,145,233,39,11
+    COMBOBOX        IDC_COMBO_CONDITION,250,233,28,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_PRODUCTBASEVIEW DIALOGEX 0, 0, 320, 200
+STYLE DS_SETFONT | WS_CHILD
+FONT 12, "华文中宋", 400, 0, 0x86
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_RADARFORMVIEW, DIALOG
+    BEGIN
+    END
+
+    IDD_DATABROWERDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 599
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 308
+    END
+
+    IDD_AXISSETTINGSDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 97
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 63
+    END
+
+    IDD_CAPTURESETTINGDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 125
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 19
+    END
+
+    IDD_SAVESETTINGSDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 284
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 20
+    END
+
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 184
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 30
+    END
+
+    IDD_LOGINDLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 172
+        BOTTOMMARGIN, 116
+    END
+
+    IDD_ADVANCEDPRODUCTVIEW, DIALOG
+    BEGIN
+    END
+
+    IDD_TASKEDITDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 502
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 247
+    END
+
+    IDD_PRODUCTBASEVIEW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 193
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_CONTEXTMENU         BITMAP                  "res\\bitmap2.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_BLACK_ICON          ICON                    "res\\LedBlack.ico"
+IDI_GREEN_ICON          ICON                    "res\\LedGreen.ico"
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英语(美国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\radar_wsp.ico"
+IDR_radar_wspTYPE       ICON                    "res\\radar_wspDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_DATA_LOCALFILES
+    BUTTON      ID_CAPTURE_SINGLE
+    SEPARATOR
+    BUTTON      ID_TOOL_TASKEDITOR
+    SEPARATOR
+    BUTTON      ID_OPTION_SAVE
+    BUTTON      ID_OPTION_ADVANCE
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\radar_wsp.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "0409"
+        BEGIN
+            VALUE "CompanyName", "TODO: <Company name>"
+            VALUE "FileDescription", "TODO: <File description>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "radar_wsp.exe"
+            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "OriginalFilename", "radar_wsp.exe"
+            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+#endif    // 英语(美国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\radar_wsp.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "afxprint.rc"       // printing/print preview resources
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
