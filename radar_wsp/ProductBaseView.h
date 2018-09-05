@@ -40,12 +40,19 @@ public:
 	enum {MAX_PRODUCT_VIEW_COUNT = 6};
 
 protected:
+	// 产品曲线开始时间
 	CTime m_tStart;
+	// 产品曲线持续时间
 	unsigned int m_tSpan;
 
+	//距离分辨率
 	unsigned int m_heightInterval;
+	//时间分辨率
 	unsigned int m_datetimeInterval;
+	//采样点数
 	unsigned int m_curvePointsSize;
+	//距离库
+	double* m_pRange;
 
 	PTR_ProductView m_pProductView[MAX_PRODUCT_VIEW_COUNT];
 	CTSLWaterfall *m_pSelectedWaterfall;
@@ -65,7 +72,7 @@ protected:
 	virtual void ReLayoutProductView();
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ֧��
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ֧��
 
 	DECLARE_MESSAGE_MAP()
 

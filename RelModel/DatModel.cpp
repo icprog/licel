@@ -3,26 +3,31 @@
 
 CDatModel::CDatModel(void)
 {
-	m_pRecords = NULL;
+	m_pLidarRecords = NULL;
 }
 
 CDatModel::~CDatModel(void)
 {
 }
 
-void CDatModel::AddRealTimeRecord(CDatRecord* pRecord)
+void CDatModel::AddRealTimeLidarRecord(CDatRecord* pLidarRecord)
 {
-	m_pRecords->push_back(pRecord);
+	m_pLidarRecords->push_back(pLidarRecord);
 }
 
-CDatRecord* CDatModel::AddEmptyRecord(unsigned int sampleChannels,unsigned int sampleNums,double *pRange)
+CDatRecord* CDatModel::AddEmptyLidarRecord(unsigned int ch_count,unsigned int sample_count)
 {
-	CDatRecord* pRecord = new CDatRecord();
-	pRecord->m_pSamples = new CSample(sampleChannels+1,sampleNums,TRUE);
-	pRecord->m_pSamples->Zero();
-	memcpy(pRecord->m_pSamples->m_pData[0],pRange,sizeof(double)*sampleNums);
-	m_pRecords->push_back(pRecord);
-	return pRecord;
+	CDatRecord* pLidarRecord = new CDatRecord();
+	for(int i=0;i<ch_count;i++)
+	{
+		CChannel* pChannel = new CChannel();
+		pChannel->m_pChannelProperty = new CChannelProperty();
+		pChannel->m_pChannelProperty->m_distCount = sample_count;
+		pChannel->m_pSample = new CSample(1,sample_count,TRUE);
+		pLidarRecord->m_channels.push_back(pChannel);
+	}
+	m_pLidarRecords->push_back(pLidarRecord);
+	return pLidarRecord;
 }
 
 int CDatModel::SetAtomshereModel(CString path)
@@ -33,24 +38,32 @@ int CDatModel::SetAtomshereModel(CString path)
 
 void CDatModel::ClearModel()
 {
-	if(m_pRecords == NULL)
+	if(pLidarRecord == NULL)
 		return;
 
-	vector<CDatRecord *>::iterator it = m_pRecords->begin();
-	while(it != m_pRecords->end())
+	vector<CDatRecord *>::iterator it = m_pLidarRecords->begin();
+	while(it != m_pLidarRecords->end())
 	{
-		(*it)->Clear();
+		vector<CChannle *>::iterator iit = (*it)->m_channels.begin();
+		while(iit != (*it)->m_channels.end())
+		{
+			(*iit)->m_pSample->Release();
+
+			delete (CChannel *)(*iit);
+			iit++;
+		}
+
+		delete (CDatRecord)(*it);
 		it++;
 	}
-	m_pRecords->clear();	
 
-	delete m_pRecords;
-	m_pRecords = NULL;
+	delete m_pLidarRecords;
+	m_pLidarRecords = NULL;
 }
 
 void CDatModel::PerpareModel()
 {
-	m_pRecords = new vector<CDatRecord *>();
+	m_pLidarRecords = new vector<CDatRecord *>();
 }
 
 

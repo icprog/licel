@@ -24,11 +24,25 @@ END_MESSAGE_MAP()
 CRadar_wspDoc::CRadar_wspDoc()
 {
 	CString appPath = ((Cradar_wspApp *)AfxGetApp())->GetAppPath();
-	CString settingsFile = appPath + _T("configs\\settings.ini");
-	m_AcquireHelper.SetDtScalerFactor(GetPrivateProfileInt(_T("capture"),_T("period"),0,settingsFile));
-	LoadSavePath(appPath);
-	CString modelFile = appPath + _T("model\\atomspheremodel.mdl");
-	m_ProductHelper.LoadAtmosphereModel(modelFile);
+
+	// é…ç½®licelå¡å‚æ•°
+	m_AcquireHelper.ConfigLicelCard(appPath + _T("configs\\licel.ini"));
+
+	// é…ç½®ç«™ç‚¹å‚æ•°
+	m_AcquireHelper.ConfigStationProperty(appPath + _T("configs\\station_meta.ini"));
+
+	// é…ç½®è®°å½•å‚æ•°
+	m_AcquireHelper.ConfigRecordProperty(appPath + _T("configs\\settings.ini"));
+	
+	// é…ç½®é€šé“å‚æ•°
+	m_AcquireHelper.ConfigChannelProperty(appPath + _T("configs\\station_meta.ini"));
+
+	// é…ç½®ä¿å­˜è·¯å¾„å‚æ•°
+	LoadSavePath();
+
+	// é…ç½®å¤§æ°”æ¨¡åž‹åº“å‚æ•°
+	m_ProductHelper.LoadAtmosphereModel(appPath + _T("model\\atomspheremodel.mdl"));
+
 	m_pCurrRecord = NULL;
 	m_curProductPageType = ProductPage_Simple;
 	m_bRTAcquire = FALSE;
@@ -103,7 +117,7 @@ BOOL CRadar_wspDoc::AddProduct(CProductHelper::ProductType product,unsigned int 
 		if(!pAdvancedView->AddProduct(product,ch))
 			return FALSE;
 
-		//FIXME:Ìí¼Ó²úÆ·ÖÁ¸ß¼¶²úÆ·ÊÓÍ¼ºóÐèË¢ÐÂÊÓÍ¼½çÃæ
+		//FIXME:ï¿½ï¿½Ó²ï¿½Æ·ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½Æ·ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
 		//pAdvancedView->UpdateView(m_ProductHelper.m_pModel,product,ch);
 	}
 	else
@@ -126,51 +140,53 @@ BOOL CRadar_wspDoc::AddProduct(CProductHelper::ProductType product,unsigned int 
 	return TRUE;
 }
 
-void CRadar_wspDoc::AddRealTimeRecord2Model(CDatRecord *pRecord)
+void CRadar_wspDoc::AddRealTimeRecord2Model(CSample* pSample/* CDatRecord *pRecord */)
 {
 	POSITION ps = this->GetFirstViewPosition();
 	CRadarFormView *pView = (CRadarFormView *)this->GetNextView(ps);
-	m_pCurrRecord->m_pSamples->Acc(pRecord->m_pSamples);
 
-	CProductHelper::Depolar(m_pCurrRecord);
-	CProductHelper::Extinction(m_pCurrRecord);
+	ASSERT(m_pCurrRecord != NULL);
+	m_pCurrRecord->m_pSamples->Acc(pSample);
+
+	//CProductHelper::Depolar(m_pCurrRecord);
+	//CProductHelper::Extinction(m_pCurrRecord);
 	
 	pView->UpdateView(m_pCurrRecord);
 
-	//FIXME:»ù´¡²úÆ·ÊÓÍ¼¼°¸ß¼¶²úÆ·ÊÓÍ¼¾ùÐèÒªË¢ÐÂ
+	//FIXME:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ·ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½Æ·ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ÒªË¢ï¿½ï¿½
 	
 }
 
-void CRadar_wspDoc::SaveToDir(CDatRecord *pRecord)
-{
-	CTime tCur = CTime::GetCurrentTime();
-	CStringA strTemp;
-	CString strFolder;
+// void CRadar_wspDoc::SaveToDir(/* CDatRecord *pRecord */)
+// {
+// 	CTime tCur = CTime::GetCurrentTime();
+// 	CStringA strTemp;
+// 	CString strFolder;
 
-	strFolder.Format(_T("\\%dÄê"),tCur.GetYear());
-	strFolder = m_SavePath + strFolder;
-	if(!PathFileExists(strFolder))
-		CreateDirectory(strFolder,NULL);
+// 	strFolder.Format(_T("\\%dï¿½ï¿½"),tCur.GetYear());
+// 	strFolder = m_SavePath + strFolder;
+// 	if(!PathFileExists(strFolder))
+// 		CreateDirectory(strFolder,NULL);
 	
-	strFolder.Format(_T("\\%dÄê\\%02dÔÂ"),tCur.GetYear(),tCur.GetMonth());
-	strFolder = m_SavePath + strFolder;
-	if(!PathFileExists(strFolder))
-		CreateDirectory(strFolder,NULL);
+// 	strFolder.Format(_T("\\%dï¿½ï¿½\\%02dï¿½ï¿½"),tCur.GetYear(),tCur.GetMonth());
+// 	strFolder = m_SavePath + strFolder;
+// 	if(!PathFileExists(strFolder))
+// 		CreateDirectory(strFolder,NULL);
 	
-	strFolder.Format(_T("\\%dÄê\\%02dÔÂ\\%02dÈÕ"),tCur.GetYear(),tCur.GetMonth(),tCur.GetDay());
-	strFolder = m_SavePath + strFolder;
-	if(!PathFileExists(strFolder))
-		CreateDirectory(strFolder,NULL);
+// 	strFolder.Format(_T("\\%dï¿½ï¿½\\%02dï¿½ï¿½\\%02dï¿½ï¿½"),tCur.GetYear(),tCur.GetMonth(),tCur.GetDay());
+// 	strFolder = m_SavePath + strFolder;
+// 	if(!PathFileExists(strFolder))
+// 		CreateDirectory(strFolder,NULL);
 
-	strFolder = tCur.Format(_T("\\%YÄê\\%mÔÂ\\%dÈÕ\\%H%M%S.rads"));
-	strFolder = m_SavePath + strFolder;
-	m_pCurrRecord->Serial2File(strFolder);
-}
+// 	strFolder = tCur.Format(_T("\\%Yï¿½ï¿½\\%mï¿½ï¿½\\%dï¿½ï¿½\\%H%M%S.rads"));
+// 	strFolder = m_SavePath + strFolder;
+// 	m_pCurrRecord->Serial2File(strFolder);
+// }
 
 void CRadar_wspDoc::StartRealTime(unsigned int period)
 {
 	m_AcquireHelper.SetDtScalerFactor(period);
-	m_AcquireHelper.UpdateHeightScaleFactor();
+	//m_AcquireHelper.UpdateHeightScaleFactor();
 
 	StartRealTime();
 }
@@ -181,38 +197,65 @@ void CRadar_wspDoc::StartRealTime()
 	CRadarFormView *pView = (CRadarFormView *)this->GetNextView(ps);
 	pView->StartRealTimeView(&m_AcquireHelper);
 	
-	//FIXME:»ù´¡²úÆ·ÊÓÍ¼¼°¸ß¼¶²úÆ·ÊÓÍ¼¾ùÐè¸üÐÂ
+	//FIXME:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ·ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½Æ·ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	m_ProductHelper.Clear();
 	m_pCurrRecord = m_ProductHelper.AddEmptyRecord(&m_AcquireHelper);
+	m_pCurrRecord->m_pRecordProperty->SetCurrTimeForStart()
 	m_bRTAcquire = TRUE;
 }
 
 void CRadar_wspDoc::RealTimeHook()
 {
+	m_pCurrRecord->m_pRecordProperty->SetCurrTimeForEnd()
+
 	POSITION ps = this->GetFirstViewPosition();
 	CRadarFormView *pSimpleView = (CRadarFormView *)this->GetNextView(ps);
 	pSimpleView->UpdateView(m_pCurrRecord,TRUE);
 
 	if(m_bSaveEnable)
-		SaveToDir(m_pCurrRecord);
+		//SaveToDir(/* m_pCurrRecord */);
+		m_pCurrRecord->StoreToFile(m_SavePath);
 
 	m_pCurrRecord = m_ProductHelper.AddEmptyRecord(&m_AcquireHelper);
+	m_pCurrRecord->m_pRecordProperty->SetCurrTimeForStart()
 }
 
 void CRadar_wspDoc::StopRealTime()
 {
 	m_ProductHelper.Clear();
-	m_pCurrRecord->Clear();
-	delete m_pCurrRecord;
+	//m_pCurrRecord->Clear();
+	//delete m_pCurrRecord;
+	m_pCurrRecord = NULL;
 
 	m_bRTAcquire = FALSE;
 }
 
-void CRadar_wspDoc::LoadSavePath(CString appPath)
-{
-	CString iniFile = appPath + _T("configs\\settings.ini");
+// void CRadar_wspDoc::LoadSavePath(CString appPath)
+// {
+// 	CString iniFile = appPath + _T("configs\\settings.ini");
 
+// 	unsigned char cBuf[_MAX_PATH];
+// 	memset(cBuf,0,_MAX_PATH);
+// 	GetPrivateProfileString(_T("save"),_T("savepath"),_T(""),(LPWSTR)cBuf,_MAX_PATH,iniFile);
+// 	m_SavePath.Empty();
+// 	m_SavePath.Append((LPWSTR)cBuf);
+
+// 	if(!PathFileExists(m_SavePath))
+// 	{
+// 		MessageBox(NULL,_T("ï¿½É¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½")+m_SavePath+_T("ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã²É¼ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½"),_T("ï¿½ï¿½ï¿½ï¿½"),MB_ICONERROR);
+// 		m_bSaveEnable = FALSE;
+// 	}
+// 	else
+// 	{
+// 		m_bSaveEnable = TRUE;
+// 	}
+// }
+
+void CRadar_wspDoc::LoadSavePath()
+{
+	CString appPath = ((Cradar_wspApp *)AfxGetApp())->GetAppPath();
+	CString iniFile = appPath + _T("configs\\settings.ini");
 	unsigned char cBuf[_MAX_PATH];
 	memset(cBuf,0,_MAX_PATH);
 	GetPrivateProfileString(_T("save"),_T("savepath"),_T(""),(LPWSTR)cBuf,_MAX_PATH,iniFile);
@@ -221,19 +264,14 @@ void CRadar_wspDoc::LoadSavePath(CString appPath)
 
 	if(!PathFileExists(m_SavePath))
 	{
-		MessageBox(NULL,_T("²É¼¯Êý¾ÝÎÄ¼þ±£´æÎ»ÖÃ")+m_SavePath+_T("²»´æÔÚ£¬ÇëÖØÐÂÅäÖÃ²É¼¯Êý¾Ý±£´æÎ»ÖÃ£¡"),_T("´íÎó"),MB_ICONERROR);
+		MessageBox(NULL,_T("ï¿½É¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½")+m_SavePath+_T("ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã²É¼ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½"),_T("ï¿½ï¿½ï¿½ï¿½"),MB_ICONERROR);
 		m_bSaveEnable = FALSE;
 	}
 	else
 	{
 		m_bSaveEnable = TRUE;
 	}
-}
-
-void CRadar_wspDoc::LoadSavePath()
-{
-	CString appPath = ((Cradar_wspApp *)AfxGetApp())->GetAppPath();
-	LoadSavePath(appPath);
+	//LoadSavePath(appPath);
 }
 
 void CRadar_wspDoc::ProductViewSwitch(ProductPageType type)

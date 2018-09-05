@@ -54,14 +54,24 @@ void CProductHelper::LoadRecords(vector<CDatRecord *> *pRecordList)
 
 CDatRecord* CProductHelper::AddEmptyRecord(CAcquireHelper* pAcquireHelper)
 {
-	CDatRecord* pRecord = m_pModel->AddEmptyRecord(pAcquireHelper->m_ChannelNum,
-												   pAcquireHelper->m_CurvePoints,
-												   pAcquireHelper->m_pRange);
-	
-	pRecord->m_SampleFreq = pAcquireHelper->m_SampleFreq;
-	pRecord->m_Chs = pAcquireHelper->m_ChannelNum;
-	pRecord->m_SampleNum = pAcquireHelper->m_CurvePoints;
-	pRecord->m_FramePeriod = pAcquireHelper->m_UpdatePeriod;
+	CDatRecord* pRecord = m_pModel->AddEmptyLidarRecord(pAcquireHelper->m_ChannelNum,
+												   pAcquireHelper->m_CurvePoints);
+	// 设置站点属性
+	pRecord->m_pRadarStation = &(pAcquireHelper->m_RadarStation);
+
+	// 设置记录属性
+	pRecord->m_pRecordProperty = &(pAcquireHelper->m_RecordProperty);
+
+	// 设置通道属性
+	std::vector<CChannel *>::iterator it = pRecord->m_channels.begin();
+	unsigned int idx = 0;
+	while(it != pRecord->m_channels.end())
+	{
+		(*it)->m_pChannelProperty = pAcquireHelper->m_ChannelPropertys[idx];
+		it++;
+		idx++;
+	}
+
 	return pRecord;
 }
 
@@ -71,82 +81,82 @@ void CProductHelper::Clear()
 	m_pModel->PerpareModel();
 }
 
-void CProductHelper::Extinction(CDatRecord* pRecord)
-{
-	if(pRecord->m_pExtinctionCoefficient == NULL)
-		pRecord->m_pExtinctionCoefficient = new CSample(pRecord->m_pSamples->GetCol(),pRecord->m_pSamples->GetLength(),TRUE);
+// void CProductHelper::Extinction(CDatRecord* pRecord)
+// {
+// 	if(pRecord->m_pExtinctionCoefficient == NULL)
+// 		pRecord->m_pExtinctionCoefficient = new CSample(pRecord->m_pSamples->GetCol(),pRecord->m_pSamples->GetLength(),TRUE);
 
-	for(unsigned int i=1;i<pRecord->m_pSamples->GetCol();i++)
-		Fernald(pRecord->m_pSamples->m_pData[0],pRecord->m_pSamples->m_pData[i],pRecord->m_pSamples->GetLength(),pRecord->m_pExtinctionCoefficient->m_pData[i]);
-}
+// 	for(unsigned int i=1;i<pRecord->m_pSamples->GetCol();i++)
+// 		Fernald(pRecord->m_pSamples->m_pData[0],pRecord->m_pSamples->m_pData[i],pRecord->m_pSamples->GetLength(),pRecord->m_pExtinctionCoefficient->m_pData[i]);
+// }
 
-void CProductHelper::Depolar(CDatRecord* pRecord)
-{
-	if(pRecord->m_pDeplorRatio == NULL)
-		pRecord->m_pDeplorRatio = new CSample(2,pRecord->m_pSamples->GetLength(),TRUE);
+// void CProductHelper::Depolar(CDatRecord* pRecord)
+// {
+// 	if(pRecord->m_pDeplorRatio == NULL)
+// 		pRecord->m_pDeplorRatio = new CSample(2,pRecord->m_pSamples->GetLength(),TRUE);
 
-	DepolarCalc(2.55,
-				pRecord->m_pSamples->GetLength(),
-				pRecord->m_pSamples->m_pData[2],
-				pRecord->m_pSamples->m_pData[3],
-				pRecord->m_pDeplorRatio->m_pData[1]);
-}
+// 	DepolarCalc(2.55,
+// 				pRecord->m_pSamples->GetLength(),
+// 				pRecord->m_pSamples->m_pData[2],
+// 				pRecord->m_pSamples->m_pData[3],
+// 				pRecord->m_pDeplorRatio->m_pData[1]);
+// }
 
-void CProductHelper::Cloud(CDatRecord* pRecord)
-{
-	if(pRecord->m_pCloud == NULL)
-	{
-		pRecord->m_pCloud = new CSample(pRecord->m_pSamples->GetCol(),pRecord->m_pSamples->GetLength(),TRUE);
-		for(int i=1;i<pRecord->m_pSamples->GetCol();i++)
-			memset(pRecord->m_pCloud->m_pData[i],0,pRecord->m_pSamples->GetLength() * sizeof(double));
-	}
+// void CProductHelper::Cloud(CDatRecord* pRecord)
+// {
+// 	if(pRecord->m_pCloud == NULL)
+// 	{
+// 		pRecord->m_pCloud = new CSample(pRecord->m_pSamples->GetCol(),pRecord->m_pSamples->GetLength(),TRUE);
+// 		for(int i=1;i<pRecord->m_pSamples->GetCol();i++)
+// 			memset(pRecord->m_pCloud->m_pData[i],0,pRecord->m_pSamples->GetLength() * sizeof(double));
+// 	}
 
-	int layer;
-	double cloud_base[40];
-	double cloud_top[40];
-	int base_idx,top_idx,idx;
-	for(unsigned int i=1;i<pRecord->m_pSamples->GetCol();i++)
-	{
-		//云层数存放于对应通道数组的第0个元素，云底存放于从第1个元素起始处，云高存放于从第101个元素起始处
-		CloudCalc(pRecord->m_pSamples->m_pData[0],
-					pRecord->m_pSamples->m_pData[i],
-					pRecord->m_pSamples->GetLength(),
-					cloud_base,
-					cloud_top,
-					layer);
-		idx = 0;
-		for(int j=0;j<layer;j++)
-		{
-			while(idx < pRecord->m_pSamples->GetLength())
-			{
-				if(pRecord->m_pSamples->m_pData[0][idx] < cloud_base[j])
-					idx++;
+// 	int layer;
+// 	double cloud_base[40];
+// 	double cloud_top[40];
+// 	int base_idx,top_idx,idx;
+// 	for(unsigned int i=1;i<pRecord->m_pSamples->GetCol();i++)
+// 	{
+// 		//云层数存放于对应通道数组的第0个元素，云底存放于从第1个元素起始处，云高存放于从第101个元素起始处
+// 		CloudCalc(pRecord->m_pSamples->m_pData[0],
+// 					pRecord->m_pSamples->m_pData[i],
+// 					pRecord->m_pSamples->GetLength(),
+// 					cloud_base,
+// 					cloud_top,
+// 					layer);
+// 		idx = 0;
+// 		for(int j=0;j<layer;j++)
+// 		{
+// 			while(idx < pRecord->m_pSamples->GetLength())
+// 			{
+// 				if(pRecord->m_pSamples->m_pData[0][idx] < cloud_base[j])
+// 					idx++;
 
-				base_idx = idx;
-				break;
-			}
-			while(idx < pRecord->m_pSamples->GetLength())
-			{
-				if(pRecord->m_pSamples->m_pData[0][idx] < cloud_top[j])
-					idx++;
+// 				base_idx = idx;
+// 				break;
+// 			}
+// 			while(idx < pRecord->m_pSamples->GetLength())
+// 			{
+// 				if(pRecord->m_pSamples->m_pData[0][idx] < cloud_top[j])
+// 					idx++;
 
-				top_idx = idx;
-				break;
-			}
-			for(int k=base_idx;k<top_idx;k++)
-				pRecord->m_pCloud->m_pData[i][k] = 1;
-		}
-	}
-}
+// 				top_idx = idx;
+// 				break;
+// 			}
+// 			for(int k=base_idx;k<top_idx;k++)
+// 				pRecord->m_pCloud->m_pData[i][k] = 1;
+// 		}
+// 	}
+// }
 
-void CProductHelper::OpticDepth(CDatRecord* pRecord)
-{
-	if(pRecord->m_pOpticDepth == NULL)
-		pRecord->m_pOpticDepth = new CSample(pRecord->m_pSamples->GetCol(),pRecord->m_pSamples->GetLength(),TRUE);
+// void CProductHelper::OpticDepth(CDatRecord* pRecord)
+// {
+// 	if(pRecord->m_pOpticDepth == NULL)
+// 		pRecord->m_pOpticDepth = new CSample(pRecord->m_pSamples->GetCol(),pRecord->m_pSamples->GetLength(),TRUE);
 
-	if(pRecord->m_pExtinctionCoefficient == NULL)
-		Extinction(pRecord);
+// 	if(pRecord->m_pExtinctionCoefficient == NULL)
+// 		Extinction(pRecord);
 
-	for(unsigned int i=1;i<pRecord->m_pSamples->GetCol();i++)
-		OpticDepthCalc(pRecord->m_pSamples->m_pData[0],pRecord->m_pExtinctionCoefficient->m_pData[i],pRecord->m_pSamples->GetLength(),pRecord->m_pOpticDepth->m_pData[i]);
-}
+// 	for(unsigned int i=1;i<pRecord->m_pSamples->GetCol();i++)
+// 		OpticDepthCalc(pRecord->m_pSamples->m_pData[0],pRecord->m_pExtinctionCoefficient->m_pData[i],pRecord->m_pSamples->GetLength(),pRecord->m_pOpticDepth->m_pData[i]);
+// }

@@ -64,7 +64,7 @@ void CSample::IncreaseSize(unsigned int size)
 		for(unsigned int j=0;j<size;j++)
 			pTemp[m_AllocateRow+j] = 0;
 
-		memcpy(pTemp,m_pData,m_AllocateRow*sizeof(double));
+		memcpy(pTemp,m_pData[i],m_AllocateRow*sizeof(double));
 		delete[] m_pData[i];
 		m_pData[i] = pTemp;
 	}
@@ -74,7 +74,7 @@ void CSample::IncreaseSize(unsigned int size)
 
 inline void CSample::Add(double *v,int cols)
 {
-	ASSERT(cols < m_Col);
+	ASSERT(cols <= m_Col);
 
 	if(m_Row == m_AllocateRow)
 		IncreaseSize(m_AllocateRow>>2);
@@ -84,7 +84,7 @@ inline void CSample::Add(double *v,int cols)
 
 	while(cols>0)
 	{
-		cols = cols -1;
+		--cols;
 		m_pData[cols][m_Row] = v[cols];
 	}
 	m_Row++;
@@ -94,7 +94,7 @@ void CSample::Acc(double *v[],int col,int row)
 {
 	ASSERT(col <= m_Col && row <= m_AllocateRow);
 
-	for(int i=1;i<col;i++)
+	for(int i=0;i<col;i++)
 		for(int j=0;j<row;j++)
 			m_pData[i][j] += v[i][j];
 }
@@ -109,12 +109,12 @@ void CSample::Acc(CSample* pSample)
 
 void CSample::Average(int factor)
 {
-	for(int i=1;i<m_Col;i++)
+	for(int i=0;i<m_Col;i++)
 		for(int j=0;j<m_Row;j++)
 			m_pData[i][j] /= factor;
 }
 
-void CSample::Release()
+void CSample::Clear()
 {
 	for(unsigned int i=0;i<MAX_SAMPLE_COL;i++)
 	{

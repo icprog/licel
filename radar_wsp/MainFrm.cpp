@@ -24,15 +24,11 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CLOSE()
 	ON_COMMAND(XTP_ID_CUSTOMIZE, OnCustomize)
 	ON_COMMAND(ID_PRODUCT_SIGNAL_1ST,OnProductSignal1st)
-	//ON_COMMAND(ID_PRODUCT_SIGNAL_2ND, &CMainFrame::OnProductSignal2nd)
 	ON_MESSAGE(XTPWM_TASKPANEL_NOTIFY, OnTaskPanelNotify)
 	ON_COMMAND(ID_DATA_LOCALFILES, &CMainFrame::OnDataLocalfiles)
 	ON_COMMAND(ID_PRODUCT_EXTINCTIONCOEFFICIENT_1ST, &CMainFrame::OnProductExtinctioncoefficient1st)
 	ON_MESSAGE(WM_CAPTUREEVENT,&CMainFrame::OnCaptureEvent)
-	//ON_COMMAND(ID_PRODUCT_ADDCUSTOMPRODUCTDISPLAYSTYLE, &CMainFrame::OnProductAddcustomproductdisplaystyle)
-	//ON_COMMAND(ID_PRODUCT_EXTINCTIONCOEFFICIENT_2ND, &CMainFrame::OnProductExtinctioncoefficient2nd)
 	ON_COMMAND(ID_PRODUCT_DEPOLAR_RATIO, &CMainFrame::OnProductDepolarRatio)
-	//ON_COMMAND(ID_PRODUCT_CLOUD, &CMainFrame::OnProductCloud)
 	ON_WM_TIMER()
 	ON_COMMAND(ID_OPTION_ADVANCE, &CMainFrame::OnOptionAdvance)
 	ON_COMMAND(ID_OPTION_SAVE, &CMainFrame::OnOptionSave)
@@ -44,21 +40,14 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_PRODUCT_CLOUD_1ST, &CMainFrame::OnProductCloud1st)
 	ON_COMMAND(ID_PRODUCT_ATMOSBOUNDARY, &CMainFrame::OnProductAtmosboundary)
 	ON_COMMAND(ID_PRODUCT_VISIBLE, &CMainFrame::OnProductVisible)
-	//ON_COMMAND(ID_PRODUCT_CLOUD_2ND, &CMainFrame::OnProductCloud2nd)
 	ON_COMMAND(ID_PRODUCT_CLOUD_3RD, &CMainFrame::OnProductCloud3rd)
 	ON_COMMAND(ID_TOOL_TASKEDITOR, &CMainFrame::OnToolTaskeditor)
 	ON_COMMAND(ID_CAPTURE_SCHEDULER, &CMainFrame::OnCaptureScheduler)
 	ON_COMMAND(ID_PRODUCT_MIXHEIGHT, &CMainFrame::OnProductMixheight)
 	ON_COMMAND(ID_PRODUCT_MASSCONCENTRATION, &CMainFrame::OnProductMassconcentration)
-	//ON_COMMAND(ID_PRODUCT_SIGNAL_4TH, &CMainFrame::OnProductSignal4th)
-	//ON_COMMAND(ID_PRODUCT_EXTINCTIONCOEFFICIENT_4TH, &CMainFrame::OnProductExtinctioncoefficient4th)
-	//ON_COMMAND(ID_PRODUCT_CLOUD_4TH, &CMainFrame::OnProductCloud4th)
 	ON_COMMAND(ID_PRODUCT_SIGNAL_5TH, &CMainFrame::OnProductSignal5th)
-	//ON_COMMAND(ID_PRODUCT_SIGNAL_6TH, &CMainFrame::OnProductSignal6th)
 	ON_COMMAND(ID_PRODUCT_EXTINCTIONCOEFFICIENT_5TH, &CMainFrame::OnProductExtinctioncoefficient5th)
-	//ON_COMMAND(ID_PRODUCT_EXTINCTIONCOEFFICIENT_6TH, &CMainFrame::OnProductExtinctioncoefficient6th)
 	ON_COMMAND(ID_PRODUCT_CLOUD_5TH, &CMainFrame::OnProductCloud5th)
-	//ON_COMMAND(ID_PRODUCT_CLOUD_6TH, &CMainFrame::OnProductCloud6th)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -120,7 +109,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// Create ToolBar
 	CXTPToolBar* pMainToolBar = (CXTPToolBar*)
-		pCommandBars->Add(_T("±ê×¼"), xtpBarTop);
+		pCommandBars->Add(_T("ï¿½ï¿½×¼"), xtpBarTop);
 	if (!pMainToolBar || !pMainToolBar->LoadToolBar(IDR_MAINFRAME,0))
 	{
 		TRACE0("Failed to create toolbar\n");
@@ -172,7 +161,7 @@ BOOL CMainFrame::InitStatusBar()
 	CString path = ((Cradar_wspApp* )AfxGetApp())->GetAppPath();
 	HICON hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\source.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
 	m_wndStatusBar.SetPaneInfo(1,ID_INDICATOR_SOURCE,SBPS_NORMAL,220);
-	m_wndStatusBar.SetPaneText(1,_T("ÇëÑ¡ÔñÊý¾ÝÔ´"));
+	m_wndStatusBar.SetPaneText(1,_T("ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´"));
 	m_wndStatusBar.GetStatusBarCtrl().SetIcon(1,hIcon);
 
 	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\download.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
@@ -182,12 +171,12 @@ BOOL CMainFrame::InitStatusBar()
 
 	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\radar.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
 	m_wndStatusBar.SetPaneInfo(3,ID_INDICATOR_ANGLE,SBPS_NORMAL,200);
-	m_wndStatusBar.SetPaneText(3,_T("¸©Ñö0.0 ·½Î»0.0"));
+	m_wndStatusBar.SetPaneText(3,_T("ï¿½ï¿½ï¿½ï¿½0.0 ï¿½ï¿½Î»0.0"));
 	m_wndStatusBar.GetStatusBarCtrl().SetIcon(3,hIcon);
 
 	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\laser.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
 	m_wndStatusBar.SetPaneInfo(4,ID_INDICATOR_LASER,SBPS_NORMAL,200);
-	m_wndStatusBar.SetPaneText(4,_T("´ýÃü ÎÂ¶È0.0 Ç¿¶È0.0"));
+	m_wndStatusBar.SetPaneText(4,_T("ï¿½ï¿½ï¿½ï¿½ ï¿½Â¶ï¿½0.0 Ç¿ï¿½ï¿½0.0"));
 	m_wndStatusBar.GetStatusBarCtrl().SetIcon(4,hIcon);
 	
 	m_wndStatusBar.SetPaneInfo(5,ID_INDICATOR_MAINPROGRESS,SBPS_STRETCH ,100);
@@ -354,17 +343,11 @@ void CMainFrame::CreateTaskPanelItems()
 	CXTPTaskPanelGroup* pGroupBaseProducts = m_wndTaskPanel.AddGroup(IDS_BASE_PRODUCTS);
 	pGroupBaseProducts->SetIconIndex(0);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_1ST, -1);
-	//pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_2ND, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_3RD, -1);
-	//pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_4TH, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_5TH, -1);
-	//pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_6TH, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_1ST, -1);
-	//pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_2ND, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_3RD, -1);
-	//pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_4TH, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_5TH, -1);
-	//pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_6TH, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_DEPOLAR_RATIO, -1);
 	pGroupBaseProducts->SetSpecialGroup();
 
@@ -372,11 +355,8 @@ void CMainFrame::CreateTaskPanelItems()
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_OPTICDEPTH, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_ATMOSBOUNDARY, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD_1ST, -1);
-	//pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD_2ND, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD_3RD, -1);
-	//pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD_4TH, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD_5TH, -1);
-	//pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD_6TH, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_VISIBLE, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_MIXHEIGHT, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_MASSCONCENTRATION, -1);
@@ -419,39 +399,21 @@ LRESULT CMainFrame::OnTaskPanelNotify(WPARAM wParam, LPARAM lParam)
 			case ID_PRODUCT_SIGNAL_1ST:
 				OnProductSignal1st();
 				break;
-			/*case ID_PRODUCT_SIGNAL_2ND:
-				OnProductSignal2nd();
-				break;*/
 			case ID_PRODUCT_SIGNAL_3RD:
 				OnProductSignal3rd();
 				break;
-			/*case ID_PRODUCT_SIGNAL_4TH:
-				OnProductSignal4th();
-				break;*/
 			case ID_PRODUCT_SIGNAL_5TH:
 				OnProductSignal5th();
 				break;
-			/*case ID_PRODUCT_SIGNAL_6TH:
-				OnProductSignal6th();
-				break;*/
 			case ID_PRODUCT_EXTINCTIONCOEFFICIENT_1ST:
 				OnProductExtinctioncoefficient1st();
 				break;
-			/*case ID_PRODUCT_EXTINCTIONCOEFFICIENT_2ND:
-				OnProductExtinctioncoefficient2nd();
-				break;*/
 			case ID_PRODUCT_EXTINCTIONCOEFFICIENT_3RD:
 				OnProductExtinctioncoefficient3rd();
 				break;
-			/*case ID_PRODUCT_EXTINCTIONCOEFFICIENT_4TH:
-				OnProductExtinctioncoefficient4th();
-				break;*/
 			case ID_PRODUCT_EXTINCTIONCOEFFICIENT_5TH:
 				OnProductExtinctioncoefficient5th();
 				break;
-			/*case ID_PRODUCT_EXTINCTIONCOEFFICIENT_6TH:
-				OnProductExtinctioncoefficient4th();
-				break;*/
 			case ID_PRODUCT_DEPOLAR_RATIO:
 				OnProductDepolarRatio();
 				break;
@@ -464,21 +426,12 @@ LRESULT CMainFrame::OnTaskPanelNotify(WPARAM wParam, LPARAM lParam)
 			case ID_PRODUCT_CLOUD_1ST:
 				OnProductCloud1st();
 				break;
-			/*case ID_PRODUCT_CLOUD_2ND:
-				OnProductCloud2nd();
-				break;*/
 			case ID_PRODUCT_CLOUD_3RD:
 				OnProductCloud3rd();
 				break;
-			/*case ID_PRODUCT_CLOUD_4TH:
-				OnProductCloud4th();
-				break;*/
 			case ID_PRODUCT_CLOUD_5TH:
 				OnProductCloud5th();
 				break;
-			/*case ID_PRODUCT_CLOUD_6TH:
-				OnProductCloud5th();
-				break;*/
 			case ID_PRODUCT_VISIBLE:
 				OnProductVisible();
 				break;
@@ -532,15 +485,6 @@ void CMainFrame::OnProductSignal1st()
 	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,1);
 }
 
-//void CMainFrame::OnProductSignal2nd()
-//{
-//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-//	ps = pDocTemplate->GetFirstDocPosition();
-//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-//	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,2);
-//}
-
 void CMainFrame::OnProductSignal3rd()
 {
 	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
@@ -549,15 +493,6 @@ void CMainFrame::OnProductSignal3rd()
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
 	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,3);
 }
-
-//void CMainFrame::OnProductSignal4th()
-//{
-//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-//	ps = pDocTemplate->GetFirstDocPosition();
-//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-//	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,4);
-//}
 
 void CMainFrame::OnProductSignal5th()
 {
@@ -568,15 +503,6 @@ void CMainFrame::OnProductSignal5th()
 	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,5);
 }
 
-//void CMainFrame::OnProductSignal6th()
-//{
-//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-//	ps = pDocTemplate->GetFirstDocPosition();
-//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-//	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,6);
-//}
-
 void CMainFrame::OnProductExtinctioncoefficient1st()
 {
 	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
@@ -585,15 +511,6 @@ void CMainFrame::OnProductExtinctioncoefficient1st()
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
 	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,1);
 }
-
-//void CMainFrame::OnProductExtinctioncoefficient2nd()
-//{
-//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-//	ps = pDocTemplate->GetFirstDocPosition();
-//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-//	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,2);	
-//}
 
 void CMainFrame::OnProductExtinctioncoefficient3rd()
 {
@@ -604,15 +521,6 @@ void CMainFrame::OnProductExtinctioncoefficient3rd()
 	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,3);	
 }
 
-//void CMainFrame::OnProductExtinctioncoefficient4th()
-//{
-//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-//	ps = pDocTemplate->GetFirstDocPosition();
-//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-//	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,4);	
-//}
-
 void CMainFrame::OnProductExtinctioncoefficient5th()
 {
 	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
@@ -621,16 +529,6 @@ void CMainFrame::OnProductExtinctioncoefficient5th()
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
 	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,5);	
 }
-
-//void CMainFrame::OnProductExtinctioncoefficient6th()
-//{
-//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-//	ps = pDocTemplate->GetFirstDocPosition();
-//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-//	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,6);	
-//}
-
 
 void CMainFrame::OnProductDepolarRatio()
 {
@@ -654,7 +552,7 @@ void CMainFrame::OnDataLocalfiles()
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
 	pDoc->OpenRecords(dlg.m_pDatRecords);
 		
-	m_wndStatusBar.SetPaneText(1,_T("ÀúÊ·Êý¾Ý"));
+	m_wndStatusBar.SetPaneText(1,_T("ï¿½ï¿½Ê·ï¿½ï¿½ï¿½ï¿½"));
 }
 
 LRESULT CMainFrame::OnCaptureEvent(WPARAM wParam,LPARAM lParam)
@@ -664,19 +562,19 @@ LRESULT CMainFrame::OnCaptureEvent(WPARAM wParam,LPARAM lParam)
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
 
-	if(wParam == 1)//À­Âü²É¼¯
+	if(wParam == 1)//ï¿½ï¿½ï¿½ï¿½ï¿½É¼ï¿½
 	{
 		if(lParam == 0)
 		{
 			if(!pDoc->m_bRTAcquire)
 				return 0;
 
-			CDatRecord *pRecord = new CDatRecord(); 
-			pRecord->m_pSamples = new CSample(pDoc->m_AcquireHelper.GetChannelNum() + 1,
-												pDoc->m_AcquireHelper.GetCurvePointNum(),TRUE);
+			//CDatRecord *pRecord = new CDatRecord(); 
+			CSample *pSample/* pRecord->m_pSamples */ = new CSample(pDoc->m_AcquireHelper.GetChannelNum(),
+												pDoc->m_AcquireHelper.GetChannelDistCount(1),TRUE);
 			
-			LicelAcq_GetData(pRecord->m_pSamples->m_pData,pDoc->m_AcquireHelper.GetCurvePointNum());
-			pDoc->AddRealTimeRecord2Model(pRecord);
+			LicelAcq_GetData(pSample->m_pData,pDoc->m_AcquireHelper.GetChannelDistCount(1));
+			pDoc->AddRealTimeRecord2Model(pSample/* pRecord */);
 
 			pRecord->Clear();
 			delete pRecord;
@@ -807,15 +705,6 @@ void CMainFrame::OnProductCloud1st()
 	pDoc->AddProduct(CProductHelper::ProductType_Cloud,1);	
 }
 
-//void CMainFrame::OnProductCloud2nd()
-//{
-//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-//	ps = pDocTemplate->GetFirstDocPosition();
-//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-//	pDoc->AddProduct(CProductHelper::ProductType_Cloud,2);	
-//}
-
 void CMainFrame::OnProductCloud3rd()
 {
 	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
@@ -825,15 +714,6 @@ void CMainFrame::OnProductCloud3rd()
 	pDoc->AddProduct(CProductHelper::ProductType_Cloud,3);	
 }
 
-//void CMainFrame::OnProductCloud4th()
-//{
-//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-//	ps = pDocTemplate->GetFirstDocPosition();
-//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-//	pDoc->AddProduct(CProductHelper::ProductType_Cloud,4);	
-//}
-
 void CMainFrame::OnProductCloud5th()
 {
 	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
@@ -842,15 +722,6 @@ void CMainFrame::OnProductCloud5th()
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
 	pDoc->AddProduct(CProductHelper::ProductType_Cloud,5);	
 }
-
-//void CMainFrame::OnProductCloud6th()
-//{
-//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-//	ps = pDocTemplate->GetFirstDocPosition();
-//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-//	pDoc->AddProduct(CProductHelper::ProductType_Cloud,6);	
-//}
 
 void CMainFrame::OnProductAtmosboundary()
 {

@@ -2,12 +2,12 @@
 
 /*!
  * @class CSample
- * @brief PiePlot¿Ø¼þÀà
+ * @brief PiePlotï¿½Ø¼ï¿½ï¿½ï¿½
  *
- *        PiePlot¿Ø¼þÀà£¬¼Ì³Ð×ÔCWnd£¬ÊÇ¼«×ø±êÏÂµÄÎ±²ÊÍ¼»òÆÙ²¼Í¼¿Ø¼þ£¬
- *        ¶ÔÒ»×éÊý¾Ý°´ÕÕ½Ç¶È½øÐÐ»æÖÆ£¬»æÖÆ²ÉÓÃµÄ
- *        ÑÕÉ«ÊÇ½«Êý¾ÝµÄÖµ×÷ÎªlevelÖµÍ¨¹ýCLevelBarÀà
- *        »ñÈ¡¶ÔÓ¦µÄÑÕÉ«¡£
+ *        PiePlotï¿½Ø¼ï¿½ï¿½à£¬ï¿½Ì³ï¿½ï¿½ï¿½CWndï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½Î±ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ù²ï¿½Í¼ï¿½Ø¼ï¿½ï¿½ï¿½
+ *        ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½ï¿½Õ½Ç¶È½ï¿½ï¿½Ð»ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½Æ²ï¿½ï¿½Ãµï¿½
+ *        ï¿½ï¿½É«ï¿½Ç½ï¿½ï¿½ï¿½ï¿½Ýµï¿½Öµï¿½ï¿½ÎªlevelÖµÍ¨ï¿½ï¿½CLevelBarï¿½ï¿½
+ *        ï¿½ï¿½È¡ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½
  */
 
 class __declspec(dllexport) CSample
@@ -21,15 +21,15 @@ public:
 	const static unsigned int MAX_SAMPLE_COL = 8;
 	
 protected:
-	unsigned int m_Row;//Êµ¼ÊÊ¹ÓÃ´óÐ¡
+	unsigned int m_Row;//Êµï¿½ï¿½Ê¹ï¿½Ã´ï¿½Ð¡
 	unsigned int m_Col;
-	unsigned int m_AllocateRow;//·ÖÅä´óÐ¡
+	unsigned int m_AllocateRow;//ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
 	
 public:
-	double* m_pData[MAX_SAMPLE_COL];
-	int GetLength() { return m_Row; }//»ñÈ¡Êµ¼ÊÊ¹ÓÃ³¤¶È
+	float* m_pData[MAX_SAMPLE_COL];
+	int GetLength() { return m_Row; }//ï¿½ï¿½È¡Êµï¿½ï¿½Ê¹ï¿½Ã³ï¿½ï¿½ï¿½
 	int GetCol() { return m_Col; }
-	void Release();
+	void Clear();
 	
 	inline void Add(double *v,int cols);
 	void Acc(double *v[],int col,int row);

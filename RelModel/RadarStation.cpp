@@ -2,6 +2,7 @@
 #include "RadarStation.h"
 
 
+
 CRadarStation::CRadarStation(void)
 {
 	m_name = _T("");
@@ -16,7 +17,7 @@ CRadarStation::~CRadarStation(void)
 
 }
 
-void CRadarStation::restore(CString configfile)
+void CRadarStation::Restore(CString configfile)
 {
 	unsigned char cBuf[_MAX_PATH];
 	memset(cBuf,0,_MAX_PATH);
@@ -81,7 +82,7 @@ void CRadarStation::restore(CString configfile)
 	m_position.altitude = _ttof(positionString);
 }
 
-void CRadarStation::store(CString configfile)
+void CRadarStation::Store(CString configfile)
 {
 
 }

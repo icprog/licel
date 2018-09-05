@@ -31,9 +31,9 @@ protected:
 	CDatRecord* m_pCurrRecord;
 
 protected:
-	void SaveToDir(CDatRecord *pRecord);
+	// void SaveToDir(CDatRecord *pRecord);
 	void ProductViewSwitch(ProductPageType type);
-	void LoadSavePath(CString appPath);
+	//void LoadSavePath(CString appPath);
 
 public:
 	void LoadSavePath();
@@ -44,7 +44,7 @@ public:
 	void StartRealTime();
 	void RealTimeHook();
 	void StopRealTime();
-	void AddRealTimeRecord2Model(CDatRecord *pRecord);
+	void AddRealTimeRecord2Model(CSample* pSample);
 	
 public:
 	virtual BOOL OnNewDocument();

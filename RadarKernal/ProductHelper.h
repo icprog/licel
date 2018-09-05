@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-using namespace std;
+//using namespace std;
 
 class CAcquireHelper;
 
@@ -46,13 +46,14 @@ public:
 
 public:
 	BOOL LoadAtmosphereModel(CString modelPath);
-	void LoadRecords(vector<CDatRecord *> *pRecordList);
+
+	void LoadRecords(std::vector<CDatRecord *> *pRecordList);
 	CDatRecord* AddEmptyRecord(CAcquireHelper* pAcquireHelper);
 	void Clear();
 
-	static void Extinction(CDatRecord* pRecord);
-	static void Depolar(CDatRecord* pRecord);
-	static void Cloud(CDatRecord* pRecord);
-	static void OpticDepth(CDatRecord* pRecord);
+	// static void Extinction(CDatRecord* pRecord);
+	// static void Depolar(CDatRecord* pRecord);
+	// static void Cloud(CDatRecord* pRecord);
+	// static void OpticDepth(CDatRecord* pRecord);
 };
 

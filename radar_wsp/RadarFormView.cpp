@@ -1,4 +1,4 @@
-// RadarFormView.cpp : ÊµÏÖÎÄ¼þ
+// RadarFormView.cpp : Êµï¿½ï¿½ï¿½Ä¼ï¿½
 //
 
 #include "stdafx.h"
@@ -42,11 +42,8 @@ void CRadarFormView::OnInitialUpdate()
 	CProductBaseView::OnInitialUpdate();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)GetDocument();
 	AddProductView(CProductHelper::ProductType_OrginSignal,1);
-	//AddProductView(CProductHelper::ProductType_OrginSignal,2);
 	AddProductView(CProductHelper::ProductType_OrginSignal,3);
-	//AddProductView(CProductHelper::ProductType_OrginSignal,4);
 	AddProductView(CProductHelper::ProductType_OrginSignal,5);
-	//AddProductView(CProductHelper::ProductType_OrginSignal,6);
 	m_bInitial = TRUE;
 }
 
@@ -109,7 +106,7 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 	m_pProductView[nIdx]->m_pStatic[1] = new CStatic();
 	m_pProductView[nIdx]->m_pStatic[0]->Create(_T(""),WS_CHILD|WS_VISIBLE,CRect(0,0,300,300),this,0);
 	m_pProductView[nIdx]->m_pStatic[1]->Create(_T(""),WS_CHILD|WS_VISIBLE,CRect(0,0,300,300),this,0);
-	
+	//æ—¶ç©ºä¼ªå½©å›¾
 	m_pProductView[nIdx]->m_pWaterfall = new CTSLWaterfall();
 	m_pProductView[nIdx]->m_pWaterfall->Open(m_pProductView[nIdx]->m_pStatic[0]->m_hWnd);
 	m_pProductView[nIdx]->m_pWaterfall->Align = CTAlign::alClient;
@@ -129,19 +126,19 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 	m_pProductView[nIdx]->m_pWaterfall->OnMouseMove.Set(this,&CRadarFormView::OnTSLMouseMove);
 	m_pProductView[nIdx]->m_pWaterfall->OnMouseUp.Set(this,&CRadarFormView::OnTSLMouseUp);
 	m_pProductView[nIdx]->m_pWaterfall->OnDataToolTip.Set(this,&CRadarFormView::OnTSLDataToolTip);
-	
+	// é…ç½®è‰²æ¡åæ ‡
 	m_pProductView[nIdx]->m_pWaterfall->Levels.Axis.Autoscale = FALSE;
 	m_pProductView[nIdx]->m_pWaterfall->Levels.Axis.Max = 3000;
 	m_pProductView[nIdx]->m_pWaterfall->Levels.Axis.Min = 0;
 	m_pProductView[nIdx]->m_pWaterfall->Levels.Colors.Add(5);
 	m_pProductView[nIdx]->m_pWaterfall->Levels.Colors.Delete(0);
-
+	// é…ç½®æ—¶é—´åæ ‡
 	m_pProductView[nIdx]->m_pWaterfall->XAxis.Min.AutoScale = FALSE;
 	m_pProductView[nIdx]->m_pWaterfall->XAxis.Min.Value = 0;
 	m_pProductView[nIdx]->m_pWaterfall->XAxis.AxisLabel.Font.Charset = GB2312_CHARSET;
-	m_pProductView[nIdx]->m_pWaterfall->XAxis.AxisLabel.Text = _T("Ê±¼ä");
+	m_pProductView[nIdx]->m_pWaterfall->XAxis.AxisLabel.Text = _T("Ê±ï¿½ï¿½");
 	m_pProductView[nIdx]->m_pWaterfall->XAxis.OnCustomLabel.Set(this,&CRadarFormView::OnCustomDtAxesLabel);
-	
+	//é…ç½®é«˜åº¦åæ ‡
 	m_pProductView[nIdx]->m_pWaterfall->YAxis.Min.AutoScale = FALSE;
 	m_pProductView[nIdx]->m_pWaterfall->YAxis.Min.DataValue = 0;
 	m_pProductView[nIdx]->m_pWaterfall->YAxis.Min.Value = 0;
@@ -149,10 +146,9 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 	m_pProductView[nIdx]->m_pWaterfall->YAxis.Max.DataValue = m_curvePointsSize;
 	m_pProductView[nIdx]->m_pWaterfall->YAxis.Max.Value = m_curvePointsSize;
 	m_pProductView[nIdx]->m_pWaterfall->YAxis.AxisLabel.Font.Charset = GB2312_CHARSET;
-	m_pProductView[nIdx]->m_pWaterfall->YAxis.AxisLabel.Text = _T("¸ß¶È(m)");
-	//m_pProductView[nIdx]->m_pWaterfall->YAxis.AxisLabel.Text = title + _T("\n\t¸ß¶È(m)");
+	m_pProductView[nIdx]->m_pWaterfall->YAxis.AxisLabel.Text = _T("ï¿½ß¶ï¿½(m)");
 	m_pProductView[nIdx]->m_pWaterfall->YAxis.OnCustomLabel.Set(this,&CRadarFormView::OnCustomHeightAxesLabel);
-
+	//æ›²çº¿å›¾
 	m_pProductView[nIdx]->m_pScope = new CTSLScope();
 	m_pProductView[nIdx]->m_pScope->Open(m_pProductView[nIdx]->m_pStatic[1]->m_hWnd);
 	m_pProductView[nIdx]->m_pScope->Align = CTAlign::alClient;
@@ -161,6 +157,7 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 	m_pProductView[nIdx]->m_pScope->Title.Text = _T("");
 	m_pProductView[nIdx]->m_pScope->OnMouseUp.Set(this,&CRadarFormView::OnTSLMouseUp);
 	
+	//é…ç½®å€¼åæ ‡è½´
 	m_pProductView[nIdx]->m_pScope->XAxis.Min.AutoScale = FALSE;
 	m_pProductView[nIdx]->m_pScope->XAxis.Min.DataValue = 0;
 	m_pProductView[nIdx]->m_pScope->XAxis.Min.Value = 0;
@@ -170,19 +167,19 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 	m_pProductView[nIdx]->m_pScope->XAxis.AxisLabel.Font.Charset = GB2312_CHARSET;
 	m_pProductView[nIdx]->m_pScope->XAxis.DataView.Lines.Visible = FALSE;
 	m_pProductView[nIdx]->m_pScope->XAxis.DataView.ZeroLine.Visible = FALSE;
-	//m_pProductView[nIdx]->m_pScope->XAxis.AxisLabel.Text = _T("ÐÅºÅ");
 	m_pProductView[nIdx]->m_pScope->XAxis.AxisLabel.Visible = FALSE;
 
+	//é…ç½®é«˜åº¦åæ ‡è½´
 	m_pProductView[nIdx]->m_pScope->YAxis.Min.AutoScale = FALSE;
 	m_pProductView[nIdx]->m_pScope->YAxis.Min.DataValue = 0;
 	m_pProductView[nIdx]->m_pScope->YAxis.Min.Value = 0;
 	m_pProductView[nIdx]->m_pScope->YAxis.Max.AutoScale = FALSE;
-	m_pProductView[nIdx]->m_pScope->YAxis.Max.DataValue = 12000.0;
-	m_pProductView[nIdx]->m_pScope->YAxis.Max.Value = 12000.0;
+	m_pProductView[nIdx]->m_pScope->YAxis.Max.DataValue = 30000;
+	m_pProductView[nIdx]->m_pScope->YAxis.Max.Value = 30000;
 	m_pProductView[nIdx]->m_pScope->YAxis.AxisLabel.Font.Charset = GB2312_CHARSET;
 	m_pProductView[nIdx]->m_pScope->YAxis.DataView.Lines.Visible = FALSE;
 	m_pProductView[nIdx]->m_pScope->YAxis.DataView.ZeroLine.Visible = FALSE;
-	m_pProductView[nIdx]->m_pScope->YAxis.AxisLabel.Text = _T("¸ß¶È(m)");
+	m_pProductView[nIdx]->m_pScope->YAxis.AxisLabel.Text = _T("ï¿½ß¶ï¿½(m)");
 	
 	m_pProductView[nIdx]->m_pScope->Legend.Visible = FALSE;
 	m_pProductView[nIdx]->m_pScope->Channels.Add();
@@ -205,7 +202,7 @@ void CRadarFormView::OnSize(UINT nType, int cx, int cy)
 		CPaintDC dc(this);
 		dc.FillSolidRect(CRect(0,0,cx,cy),RGB(0,0,0));
 		dc.SetTextColor(RGB(0,0,255));
-		dc.DrawText(_T("ÇëÑ¡ÔñÊý¾Ý²úÆ·ÒÔ¹©Õ¹Ê¾..."),14,
+		dc.DrawText(_T("ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½Æ·ï¿½Ô¹ï¿½Õ¹Ê¾..."),14,
 						CRect(0,0,cx,cy),DT_CENTER|DT_VCENTER|DT_SINGLELINE);
 		return;
 	}
@@ -237,7 +234,7 @@ void CRadarFormView::ReLayoutProductView()
 		CPaintDC dc(this);
 		dc.FillSolidRect(rt,RGB(0,0,0));
 		dc.SetTextColor(RGB(0,0,255));
-		dc.DrawText(_T("ÇëÑ¡ÔñÊý¾Ý²úÆ·ÒÔ¹©Õ¹Ê¾..."),14,
+		dc.DrawText(_T("ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½Æ·ï¿½Ô¹ï¿½Õ¹Ê¾..."),14,
 						rt,DT_CENTER|DT_VCENTER|DT_SINGLELINE);
 		return;
 	}
@@ -337,7 +334,7 @@ void __stdcall CRadarFormView::OnTSLMouseUp(VCLHANDLE Sender,CTMouseButton btn,C
 			for(int j=0;j<nMenus;j++)
 			{
 				pContextMenu->GetMenuStringW(j,szText,MF_BYPOSITION);
-				if(szText == _T("XÖá"))
+				if(szText == _T("Xï¿½ï¿½"))
 					pContextMenu->EnableMenuItem(j,MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
 			}
 			pContextMenu->TrackPopupMenu(TPM_LEFTALIGN|TPM_RIGHTBUTTON,pt.x,pt.y,this);
@@ -351,7 +348,7 @@ void __stdcall CRadarFormView::OnTSLMouseUp(VCLHANDLE Sender,CTMouseButton btn,C
 			for(int j=0;j<nMenus;j++)
 			{
 				pContextMenu->GetMenuStringW(j,szText,MF_BYPOSITION);
-				if(szText == _T("É«Ìõ"))
+				if(szText == _T("É«ï¿½ï¿½"))
 					pContextMenu->EnableMenuItem(j,MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
 			}
 			pContextMenu->TrackPopupMenu(TPM_LEFTALIGN|TPM_RIGHTBUTTON,pt.x,pt.y,this);
@@ -403,7 +400,7 @@ void __stdcall CRadarFormView::OnTSLDataToolTip(VCLHANDLE Sender,POINT &pt,CTSLR
 
 		if((m_pProductView[i]->m_pWaterfall)->Control.GetHandle() == Sender)
 		{
-			strToolTip.Format(_T("·½Î»½Ç¶È:270.90 ¸©Ñö½Ç¶È:28.89 ¸ß¶È:%.0f "),realPt.Y * m_heightInterval);
+			strToolTip.Format(_T("ï¿½ï¿½Î»ï¿½Ç¶ï¿½:270.90 ï¿½ï¿½ï¿½ï¿½ï¿½Ç¶ï¿½:28.89 ï¿½ß¶ï¿½:%.0f "),realPt.Y * m_heightInterval);
 			CString strDataVal;
 			CString strDataFormat(CProductHelper::PRODUCT_NAME_FORMAT[m_pProductView[i]->m_ProductType]);
 			strDataVal.Format(strDataFormat,m_pProductView[i]->m_pWaterfall->DataView.GetValueAtScale(realPt.X,realPt.Y));
@@ -479,14 +476,14 @@ void CRadarFormView::UpdateView(CDatModel* pModel,CProductHelper::ProductType pr
 {
 	ASSERT(pModel);
 
-	unsigned int idx;
-	unsigned int sum = pModel->m_pRecords->size();
-	if(sum <= 1)
-		return;
+	// unsigned int idx;
+	// unsigned int sum = pModel->m_pRecords->size();
+	// if(sum <= 1)
+	// 	return;
 
 	CMainFrame *pMainFrame = (CMainFrame *)AfxGetMainWnd();
-	unsigned int len = pModel->m_pRecords->at(0)->m_pSamples->GetLength();
-	vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
+	//unsigned int len = pModel->m_pRecords->at(0)->m_pSamples->GetLength();
+	//vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
 
 	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
 	{
@@ -501,69 +498,72 @@ void CRadarFormView::UpdateView(CDatModel* pModel,CProductHelper::ProductType pr
 
 		if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_OrginSignal)
 		{
-			while(it != pModel->m_pRecords->end() - 1)
+			std::vector<CDatRecord*>::iterator it = pModel->m_pLidarRecords->begin();
+			while(it != pModel->m_pLidarRecords->end() - 1)
 			{
-				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pSamples->m_pData[m_pProductView[i]->m_Ch],len);
+				m_pProductView[i]->m_pWaterfall->Data.AddData(
+							(*it)->m_channles[m_pProductView[i]->m_Ch - 1].m_pSample->m_pData[0],
+							m_curvePointsSize);
 				it++;
 			}
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_ExtinctionCoefficient)
 		{
-			idx = 0;
-			pMainFrame->UpdateWorkFlowState(0,sum);
-			BeginWaitCursor();
-			while(it != pModel->m_pRecords->end() - 1)
-			{
-				if((*it)->m_pExtinctionCoefficient == NULL)
-					CProductHelper::Extinction((*it));
-				idx++;
-				it++;
-				pMainFrame->UpdateWorkFlowState(IDS_WORKFLOW_EXTINCCOE,idx);
-			}
-			EndWaitCursor();
-			pMainFrame->UpdateWorkFlowState(0,0);
+			// idx = 0;
+			// pMainFrame->UpdateWorkFlowState(0,sum);
+			// BeginWaitCursor();
+			// while(it != pModel->m_pRecords->end() - 1)
+			// {
+			// 	if((*it)->m_pExtinctionCoefficient == NULL)
+			// 		CProductHelper::Extinction((*it));
+			// 	idx++;
+			// 	it++;
+			// 	pMainFrame->UpdateWorkFlowState(IDS_WORKFLOW_EXTINCCOE,idx);
+			// }
+			// EndWaitCursor();
+			// pMainFrame->UpdateWorkFlowState(0,0);
 
-			it = pModel->m_pRecords->begin();
-			while(it != pModel->m_pRecords->end() - 1)
-			{
-				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],len);
-				it++;
-			}
+			// it = pModel->m_pRecords->begin();
+			// while(it != pModel->m_pRecords->end() - 1)
+			// {
+			// 	m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],len);
+			// 	it++;
+			// }
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_DepolarizationRatio)
 		{
-			idx = 0;
-			pMainFrame->UpdateWorkFlowState(0,sum);
-			BeginWaitCursor();
-			while(it != pModel->m_pRecords->end())
-			{
-				if((*it)->m_pDeplorRatio == NULL)
-					CProductHelper::Depolar((*it));
-				idx++;
-				it++;
-				pMainFrame->UpdateWorkFlowState(IDS_WORKFLOW_DEPOLAR,idx);
-			}
-			EndWaitCursor();
-			pMainFrame->UpdateWorkFlowState(0,0);
+			// idx = 0;
+			// pMainFrame->UpdateWorkFlowState(0,sum);
+			// BeginWaitCursor();
+			// while(it != pModel->m_pRecords->end())
+			// {
+			// 	if((*it)->m_pDeplorRatio == NULL)
+			// 		CProductHelper::Depolar((*it));
+			// 	idx++;
+			// 	it++;
+			// 	pMainFrame->UpdateWorkFlowState(IDS_WORKFLOW_DEPOLAR,idx);
+			// }
+			// EndWaitCursor();
+			// pMainFrame->UpdateWorkFlowState(0,0);
 
-			it = pModel->m_pRecords->begin();
-			while(it != pModel->m_pRecords->end())
-			{
-				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pDeplorRatio->m_pData[1],len);
-				it++;
-			}
+			// it = pModel->m_pRecords->begin();
+			// while(it != pModel->m_pRecords->end())
+			// {
+			// 	m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pDeplorRatio->m_pData[1],len);
+			// 	it++;
+			// }
 		}
 	}
 }
 
-void CRadarFormView::UpdateView(CDatRecord* pRecord,BOOL bWaterFall)
+void CRadarFormView::UpdateViewFlyBy(CDatModel* pModel/* CDatRecord* pRecord */,BOOL bWaterFall)
 {
-	ASSERT(pRecord);
-
-	double *pRange = pRecord->m_pSamples->m_pData[0];
-	unsigned short len = pRecord->m_pSamples->GetLength();
-	double *nullBuf = new double[len];
-	memset(nullBuf,0x00,sizeof(double) * len);
+	ASSERT(pModel);
+	unsigned int idxFlyby = pModel->m_pLidarRecords->size();
+	ASSERT(idxFlyby)
+	
+	double *nullBuf = new double[m_curvePointsSize];
+	memset(nullBuf,0x00,sizeof(double) * m_curvePointsSize);
 
 	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
 	{
@@ -571,18 +571,24 @@ void CRadarFormView::UpdateView(CDatRecord* pRecord,BOOL bWaterFall)
 			continue;
 
 		if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_OrginSignal)
-			m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pSamples->m_pData[m_pProductView[i]->m_Ch],pRange,len);
+		{
+			CDatRecord* pLidarRecord = pModel->m_pLidarRecords->at(idxFlyby - 1);
+			m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(
+								pLidarRecord->m_channels[m_pProductView[i]->m_Ch-1]->m_pSample->m_pData[0],
+								m_pRange,
+								m_curvePointsSize);
+		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_ExtinctionCoefficient)
 		{
-			if(pRecord->m_pExtinctionCoefficient == NULL)
-				m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(nullBuf,pRange,len);
-			else m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],pRange,len);
+			// if(pRecord->m_pExtinctionCoefficient == NULL)
+			// 	m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(nullBuf,pRange,len);
+			// else m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],pRange,len);
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_DepolarizationRatio)
 		{
-			if(pRecord->m_pDeplorRatio == NULL)
-				m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(nullBuf,pRange,len);
-			else m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pDeplorRatio->m_pData[1],pRange,len);
+			// if(pRecord->m_pDeplorRatio == NULL)
+			// 	m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(nullBuf,pRange,len);
+			// else m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pDeplorRatio->m_pData[1],pRange,len);
 		}
 	}
 
@@ -598,18 +604,23 @@ void CRadarFormView::UpdateView(CDatRecord* pRecord,BOOL bWaterFall)
 			continue;
 
 		if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_OrginSignal)
-			m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pSamples->m_pData[m_pProductView[i]->m_Ch],len);
+		{
+			CDatRecord* pLidarRecord = pModel->m_pLidarRecords->at(idxFlyby - 1);
+			m_pProductView[i]->m_pWaterfall->Data.AddData(
+									pLidarRecord->m_channels[m_pProductView[i]->m_Ch-1]->m_pSample->m_pData[0],
+									m_curvePointsSize);
+		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_ExtinctionCoefficient)
 		{
-			if(pRecord->m_pExtinctionCoefficient == NULL)
-				m_pProductView[i]->m_pWaterfall->Data.AddData(nullBuf,len);
-			else m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],len);
+			// if(pRecord->m_pExtinctionCoefficient == NULL)
+			// 	m_pProductView[i]->m_pWaterfall->Data.AddData(nullBuf,len);
+			// else m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],len);
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_DepolarizationRatio)
 		{
-			if(pRecord->m_pDeplorRatio == NULL)
-				m_pProductView[i]->m_pWaterfall->Data.AddData(nullBuf,len);
-			else m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pDeplorRatio->m_pData[1],len);
+			// if(pRecord->m_pDeplorRatio == NULL)
+			// 	m_pProductView[i]->m_pWaterfall->Data.AddData(nullBuf,len);
+			// else m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pDeplorRatio->m_pData[1],len);
 		}
 	}
 }
@@ -618,7 +629,9 @@ void CRadarFormView::StartRealTimeView(CAcquireHelper* pAcquireHelper)
 {
 	m_heightInterval = pAcquireHelper->GetHeightScaleFactor();
 	m_datetimeInterval = pAcquireHelper->GetDtScaleFactor();
-	m_curvePointsSize = pAcquireHelper->GetCurvePointNum();
+	m_curvePointsSize = pAcquireHelper->GetChannelDistCount();
+	m_pRange = pAcquireHelper->GetRange();
+	
 	ScrollProductView();
 }
 
@@ -630,7 +643,7 @@ void CRadarFormView::OnAxisconfigureHorizontalaxis()
 	{
 		dlg.m_Max = m_pSelectedScope->XAxis.CurrentMax;
 		dlg.m_Min = m_pSelectedScope->XAxis.CurrentMin;
-		dlg.m_Title = _T("Ë®Æ½×ø±êÖáÉèÖÃ");
+		dlg.m_Title = _T("Ë®Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		dlg.m_bLogCheckEnable = TRUE;
 		dlg.m_bLogEnable = (m_pSelectedScope->XAxis.ScaleMode == smLogarithmic);
 		if(IDOK != dlg.DoModal())
@@ -652,7 +665,7 @@ void CRadarFormView::OnAxisconfigureVerticalaxis()
 	{
 		dlg.m_Max = m_pSelectedWaterfall->YAxis.CurrentMax * m_heightInterval;
 		dlg.m_Min = m_pSelectedWaterfall->YAxis.CurrentMin * m_heightInterval;
-		dlg.m_Title = _T("´¹Ö±×ø±êÖáÉèÖÃ(¸ß¶È/m)");
+		dlg.m_Title = _T("ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ß¶ï¿½/m)");
 		dlg.m_bLogCheckEnable = FALSE;
 		if(IDOK != dlg.DoModal())
 			return;
@@ -664,7 +677,7 @@ void CRadarFormView::OnAxisconfigureVerticalaxis()
 	{
 		dlg.m_Max = m_pSelectedScope->YAxis.CurrentMax;
 		dlg.m_Min = m_pSelectedScope->YAxis.CurrentMin;
-		dlg.m_Title = _T("´¹Ö±×ø±êÖáÉèÖÃ(¸ß¶È/m)");
+		dlg.m_Title = _T("ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ß¶ï¿½/m)");
 		dlg.m_bLogCheckEnable = FALSE;
 		if(IDOK != dlg.DoModal())
 			return;
@@ -682,7 +695,7 @@ void CRadarFormView::OnAxisconfigureLevelaxis()
 	{
 		dlg.m_Max = m_pSelectedWaterfall->Levels.Axis.Max;
 		dlg.m_Min = m_pSelectedWaterfall->Levels.Axis.Min;
-		dlg.m_Title = _T("É«Ìõ×ø±êÖáÉèÖÃ");
+		dlg.m_Title = _T("É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		dlg.m_bLogEnable = (m_pSelectedWaterfall->Levels.Axis.ScaleMode == smLogarithmic);
 		dlg.m_bLogCheckEnable = TRUE;
 		if(IDOK != dlg.DoModal())

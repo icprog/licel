@@ -8,14 +8,25 @@ public:
 	CStandardFormatter(void);
 	~CStandardFormatter(void);
 
-	typedef enum tagFormatType
-	{
-		FormatType_Lidar = 0,
-
-	}FormatType;
+public:
+	// 标准文件尺寸
+	const static unsigned int StandardFormat_Size = 512310;
+	// 标准文件格式版本
+	const static unsigned int StandardFormat_Version = 1;
 
 public:
-	void Serial2File(CString file,FormatType type,CDatRecord* pRecord,CRadarStation* pStation);
-	void ReserialFromFile(CString file);
+	// 持久化
+	static void SerialHeader(unsigned char* pBuf,CRecord* pRecord);
+	static void SerialStationInfo(unsigned char* pBuf,CRadarStation* pStation);
+	static void SerialRecordInfo(unsigned char* pBuf,CRecordProperty* pRecordProperty);
+	static void SerialChannelInfo(unsigned char* pBuf,std::vector<CChannle *>& channels);
+	static void SerialChannelSample(unsigned char* pBuf,std::vector<CChannle *>& channels);
+
+	// 反持久化
+	static int ReserialHeader(unsigned char* pBuf,CRecord* pRecord);
+	static int ReserialStationInfo(unsigned char* pBuf,CRadarStation* pStation);
+	static int ReserialRecordInfo(unsigned char* pBuf,CRecordProperty* pRecordProperty);
+	static int ReserialChannelInfo(unsigned char* pBuf,std::vector<CChannle *>& channels);
+	static int ReserialChannelSample(unsigned char* pBuf,std::vector<CChannle *>& channels);
 };
 
