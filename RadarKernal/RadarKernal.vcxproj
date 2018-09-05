@@ -113,7 +113,6 @@
     <ClCompile Include="ProductHelper.cpp" />
     <ClCompile Include="ProgressDlg.cpp" />
     <ClCompile Include="RadarKernal.cpp" />
-    <ClCompile Include="RadarStation.cpp" />
     <ClCompile Include="StandardFormatter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -124,7 +123,6 @@
     <ClInclude Include="AcquireHelper.h" />
     <ClInclude Include="ProductHelper.h" />
     <ClInclude Include="ProgressDlg.h" />
-    <ClInclude Include="RadarStation.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StandardFormatter.h" />
     <ClInclude Include="stdafx.h" />

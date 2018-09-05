@@ -8,7 +8,7 @@ CRadarStation::CRadarStation(void)
 	m_name = _T("");
 	m_id = _T("");
 	m_model = _T("");
-	m_chs = 0;
+	m_chCount = 0;
 }
 
 
@@ -39,7 +39,7 @@ void CRadarStation::Restore(CString configfile)
 	m_model.Append((LPWSTR)cBuf);
 
 	// 通道数
-	m_chs = GetPrivateProfileInt(_T("summary"),_T("channels"),0,configlefile);
+	m_chCount = GetPrivateProfileInt(_T("summary"),_T("channels"),0,configfile);
 
 	CString wave_temp;
 	memset(cBuf,0,_MAX_PATH);
@@ -48,7 +48,7 @@ void CRadarStation::Restore(CString configfile)
 	wave_temp.Empty();
 	wave_temp.Append((LPWSTR)cBuf);
 
-	vector<CString> waveString;
+	std::vector<CString> waveString;
 	SplitCString(wave_temp,_T(","),waveString);
 
 	std::vector<CString>::iterator it = waveString.begin();
@@ -65,14 +65,14 @@ void CRadarStation::Restore(CString configfile)
 	GetPrivateProfileString(_T("position"),_T("longitude"),_T("0.0"),(LPWSTR)cBuf,_MAX_PATH,configfile);
 	positionString.Empty();
 	positionString.Append((LPWSTR)cBuf);
-	m_position.m_longitude = _ttof(positionString);
+	m_position.longitude = _ttof(positionString);
 
 	// 纬度
 	memset(cBuf,0,_MAX_PATH);
 	GetPrivateProfileString(_T("position"),_T("latitude"),_T("0.0"),(LPWSTR)cBuf,_MAX_PATH,configfile);
 	positionString.Empty();
 	positionString.Append((LPWSTR)cBuf);
-	m_position.m_latitude = _ttof(positionString);
+	m_position.latitude = _ttof(positionString);
 
 	// 高度
 	memset(cBuf,0,_MAX_PATH);

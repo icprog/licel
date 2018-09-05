@@ -51,7 +51,7 @@ CSample::CSample(unsigned int col,unsigned int row,BOOL bAllocated)
 
 CSample::~CSample(void)
 {
-	Release();
+	Clear();
 }
 
 void CSample::IncreaseSize(unsigned int size)

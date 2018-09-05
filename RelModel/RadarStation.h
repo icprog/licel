@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-class AFX_EXT_CLASS CRadarStation
+class __declspec(dllexport) CRadarStation
 {
 public:
 	typedef struct tagPosition

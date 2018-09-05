@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "ChannelProperty.h"
 
-static char* CRadarStation::AcqTypeString[] = {"AD","PC","融合"};
-static char* CRadarStation::WaveTypeString[] = {"偏振P","偏振S","拉曼"};
+char* CChannelProperty::AcqTypeString[] = {"AD","PC","融合"};
+char* CChannelProperty::WaveTypeString[] = {"偏振P","偏振S","拉曼"};
 
 CChannelProperty::CChannelProperty()
 {
@@ -22,12 +22,12 @@ int CChannelProperty::Restore(CString config)
     unsigned char cBuf[_MAX_PATH];
 	memset(cBuf,0,_MAX_PATH);
 	// 通道名称
-	GetPrivateProfileString(idStr,_T("name"),_T(""),(LPWSTR)cBuf,_MAX_PATH,configfile);
+	GetPrivateProfileString(idStr,_T("name"),_T(""),(LPWSTR)cBuf,_MAX_PATH,config);
 	m_name.Empty();
 	m_name.Append((LPWSTR)cBuf);
 
     //采集类型
-    unsigned short usTemp = GetPrivateProfileInt(idStr,_T("channels"),0,configlefile);
+    unsigned short usTemp = GetPrivateProfileInt(idStr,_T("channels"),0,config);
     if(usTemp != (AcqType)usTemp)
         return -1;
     m_acqType = (AcqType)usTemp;
@@ -35,13 +35,13 @@ int CChannelProperty::Restore(CString config)
     // 波长
     CString strTemp;
     memset(cBuf,0,_MAX_PATH);
-    GetPrivateProfileString(idStr,_T("wave_len"),_T(""),(LPWSTR)cBuf,_MAX_PATH,configfile);
+    GetPrivateProfileString(idStr,_T("wave_len"),_T(""),(LPWSTR)cBuf,_MAX_PATH,config);
 	strTemp.Empty();
 	strTemp.Append((LPWSTR)cBuf);
     m_waveLen = _ttof(strTemp);
 
     // 回波类型
-    usTemp = GetPrivateProfileInt(idStr,_T("wave_type"),0,configlefile);
+    usTemp = GetPrivateProfileInt(idStr,_T("wave_type"),0,config);
     if(usTemp != (WaveType)usTemp)
         return -2;
     m_waveType = (WaveType)usTemp;
@@ -55,7 +55,7 @@ int CChannelProperty::Restore(CString config)
 
     // 盲区高度
     memset(cBuf,0,_MAX_PATH);
-    GetPrivateProfileString(idStr,_T("dead_zone"),_T(""),(LPWSTR)cBuf,_MAX_PATH,configfile);
+    GetPrivateProfileString(idStr,_T("dead_zone"),_T(""),(LPWSTR)cBuf,_MAX_PATH,config);
 	strTemp.Empty();
 	strTemp.Append((LPWSTR)cBuf);
     m_deadZone = _ttof(strTemp);

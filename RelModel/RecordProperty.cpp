@@ -10,3 +10,14 @@ CRecordProperty::~CRecordProperty()
 {
 
 }
+
+
+void CRecordProperty::SetCurrTimeForStart()
+{
+
+}
+
+void CRecordProperty::SetCurrTimeForEnd()
+{
+
+}

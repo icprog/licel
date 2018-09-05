@@ -58,7 +58,7 @@ CStandardFormatter::~CStandardFormatter(void)
 //   delete[] pBuf;
 // }
 
-void CStandardFormatter::SerialHeader(unsigned char* pBuf,CRecord* pRecord)
+void CStandardFormatter::SerialHeader(unsigned char* pBuf,CDatRecord* pRecord)
 {
   // 保留
   memset(pBuf,0x00,14);
@@ -92,7 +92,7 @@ void CStandardFormatter::SerialStationInfo(unsigned char* pBuf,CRadarStation* pS
   pBuf[27] = (alt & 0x000000ff);
 
   // 发射波长
-  memset(pBuf[46],0x00,6);
+  memset(pBuf+46,0x00,6);
   unsigned int wave_count = pStation->m_waves.size();
   for(unsigned int i=0;i<min(3,wave_count);i++)
   {
@@ -105,7 +105,7 @@ void CStandardFormatter::SerialStationInfo(unsigned char* pBuf,CRadarStation* pS
   pBuf[53] = (pStation->m_chCount & 0x000000ff);
 }
 
-void CStandardFormatter::SerialRecordInfo(unsigned char* pBuf,CDatRecord* pRecordProperty)
+void CStandardFormatter::SerialRecordInfo(unsigned char* pBuf,CRecordProperty* pRecordProperty)
 {
   // 探测模式
   pBuf[30] = (pRecordProperty->m_ModeType & 0xff00) >> 8;
@@ -147,31 +147,32 @@ void CStandardFormatter::SerialRecordInfo(unsigned char* pBuf,CDatRecord* pRecor
   pBuf[45] = (fw & 0x000000ff);
 }
 
-void CStandardFormatter::SerialChannelsInfo(unsigned char* pBuf,std::vector<CChannle *>& channels)
+void CStandardFormatter::SerialChannelInfo(unsigned char* pBuf,std::vector<CChannel *>& channels)
 {
   std::vector<CChannel *>::iterator it = channels.begin();
   unsigned int idx = 54;
+  unsigned int i=0;
   while(it != channels.end())
   {
     // 通道号标示
-    pBuf[idx + i * 16] =  ((*it)->m_ChannelProperty.m_id & 0xff00) >> 8;
-    pBuf[idx + i * 16 + 1] = (*it)->m_ChannelProperty.m_id & 0x00ff;
+    pBuf[idx + i * 16] =  ((i+1) & 0xff00) >> 8;
+    pBuf[idx + i * 16 + 1] = (i+1) & 0x00ff;
 
     // 采集方式
-    pBuf[idx + i * 16 + 2] = ((*it)->m_ChannelProperty.m_acqType & 0xff00) >> 8;
-    pBuf[idx + i * 16 + 3] = (*it)->m_ChannelProperty.acq_type & 0x00ff;
+    pBuf[idx + i * 16 + 2] = ((*it)->m_pChannelProperty->m_acqType & 0xff00) >> 8;
+    pBuf[idx + i * 16 + 3] = (*it)->m_pChannelProperty->m_acqType & 0x00ff;
 
     // 回波信号类型
-    pBuf[idx + i * 16 + 4] = ((*it)->m_ChannelProperty.m_waveType & 0xff00) >> 8;
-    pBuf[idx + i * 16 + 5] = (*it)->m_ChannelProperty.wave_type & 0x00ff;
+    pBuf[idx + i * 16 + 4] = ((*it)->m_pChannelProperty->m_waveType & 0xff00) >> 8;
+    pBuf[idx + i * 16 + 5] = (*it)->m_pChannelProperty->m_waveType & 0x00ff;
 
     // 距离分辨率
-    pBuf[idx + i * 16 + 6] = (((*it)->m_ChannelProperty.m_distResolution * 100) & 0xff00) >> 8;
-    pBuf[idx + i * 16 + 7] = ((*it)->m_ChannelProperty.m_distResolution * 100) & 0x00ff;
+    pBuf[idx + i * 16 + 6] = ((unsigned short)(((*it)->m_pChannelProperty->m_distResolution * 100)) & 0xff00) >> 8;
+    pBuf[idx + i * 16 + 7] = ((unsigned short)((*it)->m_pChannelProperty->m_distResolution * 100)) & 0x00ff;
 
     // 盲区高度
-    pBuf[idx + i * 16 + 8] = ((pStation->m_AcqChannels[i].dead_zone * 10) & 0xff00) >> 8;
-    pBuf[idx + i * 16 + 9] = (pStation->m_AcqChannels[i].dead_zone * 10) & 0x00ff;
+    pBuf[idx + i * 16 + 8] = ((unsigned short)(((*it)->m_pChannelProperty->m_deadZone * 10)) & 0xff00) >> 8;
+    pBuf[idx + i * 16 + 9] = ((unsigned short)((*it)->m_pChannelProperty->m_deadZone * 10)) & 0x00ff;
 
     // 通道数据指针
     unsigned int chDataPos = 311 + i * 32000;
@@ -181,14 +182,15 @@ void CStandardFormatter::SerialChannelsInfo(unsigned char* pBuf,std::vector<CCha
     pBuf[idx + i * 16 + 13] = (chDataPos & 0x000000ff);
 
     // 通道距离库数
-    pBuf[idx + i * 16 + 14] = ((*it)->m_ChannelProperty.m_distCount & 0xff00) >> 8;
-    pBuf[idx + i * 16 + 15] = (*it)->m_ChannelProperty.m_distCount & 0x00ff;
+    pBuf[idx + i * 16 + 14] = ((*it)->m_pChannelProperty->m_distCount & 0xff00) >> 8;
+    pBuf[idx + i * 16 + 15] = (*it)->m_pChannelProperty->m_distCount & 0x00ff;
 
     it++;
+	i++;
   }
 }
 
-void CStandardFormatter::SerialChannelSample(unsigned char* pBuf,std::vector<CChannle *>& channels)
+void CStandardFormatter::SerialChannelSample(unsigned char* pBuf,std::vector<CChannel *>& channels)
 {
   unsigned int chDataPos,i=0;
   std::vector<CChannel *>::iterator it = channels.begin();
@@ -197,7 +199,7 @@ void CStandardFormatter::SerialChannelSample(unsigned char* pBuf,std::vector<CCh
     chDataPos = 311 + i * 32000;
 
     CSample* pSample = (*it)->m_pSample;
-    for(unsigned int j=0; j<(*it)->m_ChannelProperty.m_distCount; j++)
+    for(unsigned int j=0; j<(*it)->m_pChannelProperty->m_distCount; j++)
       memcpy(pBuf + chDataPos - 1 + j * 4,(unsigned char*)&(pSample->m_pData[0][j]),4);
 
     it++;
@@ -205,7 +207,7 @@ void CStandardFormatter::SerialChannelSample(unsigned char* pBuf,std::vector<CCh
   }
 }
 
-int CStandardFormatter::ReserialHeader(unsigned char* pBuf,CRecord* pRecord)
+int CStandardFormatter::ReserialHeader(unsigned char* pBuf,CDatRecord* pRecord)
 {
   unsigned short usTemp;
 
@@ -258,7 +260,7 @@ int CStandardFormatter::ReserialStationInfo(unsigned char* pBuf,CRadarStation* p
   pStation->m_position.altitude = usTemp;
 
   // 发射波长
-  memset(pBuf[46],0x00,6);
+  memset(pBuf+46,0x00,6);
   unsigned int wave_count = pStation->m_waves.size();
   for(unsigned int i=0;i<3;i++)
   {
@@ -268,7 +270,7 @@ int CStandardFormatter::ReserialStationInfo(unsigned char* pBuf,CRadarStation* p
     if(usTemp == 0)
       return 46+i*2 + 1;
 
-    pStation->m_waves.pusb_back(usTemp);
+    pStation->m_waves.push_back(usTemp);
   }
 
   // 接收通道数
@@ -353,7 +355,7 @@ int CStandardFormatter::ReserialRecordInfo(unsigned char* pBuf,CRecordProperty* 
   return 0;
 }
 
-int CStandardFormatter::ReserialChannelInfo(unsigned char* pBuf,unsigned short chCount,std::vector<CChannle *>& channels)
+int CStandardFormatter::ReserialChannelInfo(unsigned char* pBuf,unsigned short chCount,std::vector<CChannel *>& channels)
 {
   unsigned short usTemp;
   unsigned int idx = 54;
@@ -364,7 +366,7 @@ int CStandardFormatter::ReserialChannelInfo(unsigned char* pBuf,unsigned short c
     usTemp = pBuf[idx + i*16];
     usTemp = (usTemp << 8);
     usTemp += pBuf[idx + i * 16 + 1];
-    pChannelProperty.m_id = usTemp;
+    pChannelProperty->m_id = usTemp;
 
     // 采集方式
     usTemp = pBuf[idx + i*16 + 2];
@@ -386,7 +388,7 @@ int CStandardFormatter::ReserialChannelInfo(unsigned char* pBuf,unsigned short c
     usTemp = pBuf[idx + i*16 + 6];
     usTemp = (usTemp << 8);
     usTemp += pBuf[idx + i * 16 + 7];
-    pChannelProperty->m_distResolution = ((double)usTemp) / 100.0
+    pChannelProperty->m_distResolution = ((double)usTemp) / 100.0;
 
     // 盲区高度
     usTemp = pBuf[idx + i*16 + 8];
@@ -407,21 +409,23 @@ int CStandardFormatter::ReserialChannelInfo(unsigned char* pBuf,unsigned short c
     usTemp += pBuf[idx + i * 16 + 15];
     pChannelProperty->m_distCount = usTemp;
 
-    channels.push_back(pChannelProperty);
+	CChannel *pChannel = new CChannel();
+	pChannel->m_pChannelProperty = pChannelProperty;
+    channels.push_back(pChannel);
   }
 
   return 0;
 }
 
-int CStandardFormatter::ReserialChannelSample(unsigned char* pBuf,std::vector<CChannle *>& channels)
+int CStandardFormatter::ReserialChannelSample(unsigned char* pBuf,std::vector<CChannel *>& channels)
 {
   unsigned int chDataPos,distCount;
   std::vector<CChannel *>::iterator it = channels.begin();
 
   while(it != channels.end())
   {
-    chDataPos = 311 + ((*it)->m_ChannelProperty.m_id - 1) * 32000;
-    distCount = (*it)->m_ChannelProperty.m_distCount;
+    chDataPos = 311 + ((*it)->m_pChannelProperty->m_id - 1) * 32000;
+    distCount = (*it)->m_pChannelProperty->m_distCount;
 
     if((*it)->m_pSample == NULL)
       (*it)->m_pSample = new CSample(1,distCount,TRUE);
@@ -429,7 +433,7 @@ int CStandardFormatter::ReserialChannelSample(unsigned char* pBuf,std::vector<CC
     for(unsigned int i=0; i<distCount; i++)
     {
       ASSERT(chDataPos + i * 4 + 4 <= StandardFormat_Size);
-      memcpy(pBuf + chDataPos - 1 + i * 4,(unsigned char*)&(pSample->m_pData[0][i]),4);
+      memcpy(pBuf + chDataPos - 1 + i * 4,(unsigned char*)&((*it)->m_pSample->m_pData[0][i]),4);
     }
 
     it++;

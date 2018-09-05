@@ -4,7 +4,7 @@ class __declspec(dllexport) CRecordProperty
 {
 public:
 	CRecordProperty();
-	~CRecordProperty(void);
+	~CRecordProperty();
 
     // 探测模式类型
     typedef enum tagModeType
@@ -14,8 +14,14 @@ public:
     }ModeType;
 
 public:
+    // 设置当前时间为开始时间
+    void SetCurrTimeForStart();
+    // 设置当前时间为采集结束时间
+    void SetCurrTimeForEnd();
+
+public:
     // 探测模式
-    ModeType m_ModeType
+	ModeType m_ModeType;
     // 采集开始时间
     CTime m_sTime;      
     // 采集结束时间
@@ -24,10 +30,4 @@ public:
 	double m_FyAngle; 
     // 方位角度           
 	double m_FwAngle;
-
-public:
-    // 设置当前时间为开始时间
-    void SetCurrTimeForStart();
-    // 设置当前时间为采集结束时间
-    void SetCurrTimeForEnd();
 };

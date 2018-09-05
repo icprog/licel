@@ -9,7 +9,7 @@
 // CString gb_strPropertyName,gb_strPropertyVal;
 // vector<CString> gb_colStr;
 
-static CDatRecord::m_FormatTypeString[] = {"Lidar原始数据","Lidar产品数据"};
+char* CDatRecord::m_RecordTypeString[] = {"Lidar原始数据","Lidar产品数据"};
 
 CDatRecord::CDatRecord()
 {
@@ -90,9 +90,9 @@ void CDatRecord::Clear()
 	// }
 }
 
-BOOL CDatRecord::AttachRecordFile(CString recordFile)
+BOOL CDatRecord::AttachRecordFile(CString recordFile,fpHeaderDecoder fp)
 {
-	
+	return TRUE;
 }
 
 BOOL CDatRecord::DecodeStationInfo(fpRadarStationDecoder fp)

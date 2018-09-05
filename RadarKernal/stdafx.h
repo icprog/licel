@@ -44,6 +44,10 @@
 #pragma comment(lib,"../Release/RelModel.lib")
 #endif
 #include "../RelModel/Sample.h"
+#include "../RelModel/RadarStation.h"
+#include "../RelModel/Channel.h"
+#include "../RelModel/ChannelProperty.h"
+#include "../RelModel/RecordProperty.h"
 #include "../RelModel/DatRecord.h"
 #include "../RelModel/DatModel.h"
 

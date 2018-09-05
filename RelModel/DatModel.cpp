@@ -38,22 +38,22 @@ int CDatModel::SetAtomshereModel(CString path)
 
 void CDatModel::ClearModel()
 {
-	if(pLidarRecord == NULL)
+	if(m_pLidarRecords == NULL)
 		return;
 
 	vector<CDatRecord *>::iterator it = m_pLidarRecords->begin();
 	while(it != m_pLidarRecords->end())
 	{
-		vector<CChannle *>::iterator iit = (*it)->m_channels.begin();
+		vector<CChannel *>::iterator iit = (*it)->m_channels.begin();
 		while(iit != (*it)->m_channels.end())
 		{
-			(*iit)->m_pSample->Release();
+			(*iit)->m_pSample->Clear();
 
 			delete (CChannel *)(*iit);
 			iit++;
 		}
 
-		delete (CDatRecord)(*it);
+		delete (CDatRecord *)(*it);
 		it++;
 	}
 

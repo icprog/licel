@@ -44,6 +44,6 @@ public:
     unsigned short m_distCount;
 
 public:
-	void Restore(CString config);
+	int Restore(CString config);
 	void Store(CString config);
 };

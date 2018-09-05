@@ -24,12 +24,12 @@ public:
 		RecordType_Sum
 	}RecordType;
 
-    static char* m_FormatTypeString[FormatType_Sum];
+    static char* m_RecordTypeString[RecordType_Sum];
 
-	typedef (void)*(unsigned char*, CDatRecord*) fpHeaderDecoder;
-	typedef (void)*(unsigned char*, CRadarStation*) fpRadarStationDecoder;
-	typedef (void)*(unsigned char*, CRecordProperty*) fpRecordPropertyDecoder;
-	typedef (void)*(unsigned char*, std::vector<CChannle *>&) fpChannelDecoder;
+	typedef void(*fpHeaderDecoder)(unsigned char*, CDatRecord*);
+	typedef void(*fpRadarStationDecoder)(unsigned char*, CRadarStation*);
+	typedef void(*fpRecordPropertyDecoder)(unsigned char*, CRecordProperty*);
+	typedef void(*fpChannelDecoder)(unsigned char*, std::vector<CChannel *>&);
 
 public:
 	CString m_src;

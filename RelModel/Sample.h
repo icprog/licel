@@ -26,7 +26,7 @@ protected:
 	unsigned int m_AllocateRow;//�����С
 	
 public:
-	float* m_pData[MAX_SAMPLE_COL];
+	double* m_pData[MAX_SAMPLE_COL];
 	int GetLength() { return m_Row; }//��ȡʵ��ʹ�ó���
 	int GetCol() { return m_Col; }
 	void Clear();

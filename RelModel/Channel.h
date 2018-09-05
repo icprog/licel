@@ -1,5 +1,6 @@
 #pragma once
 #include "ChannelProperty.h"
+#include "Sample.h"
 
 class __declspec(dllexport) CChannel
 {

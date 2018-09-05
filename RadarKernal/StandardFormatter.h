@@ -1,7 +1,5 @@
 #pragma once
 
-#include "RadarStation.h"
-
 class CStandardFormatter
 {
 public:
@@ -16,17 +14,17 @@ public:
 
 public:
 	// 持久化
-	static void SerialHeader(unsigned char* pBuf,CRecord* pRecord);
+	static void SerialHeader(unsigned char* pBuf,CDatRecord* pRecord);
 	static void SerialStationInfo(unsigned char* pBuf,CRadarStation* pStation);
 	static void SerialRecordInfo(unsigned char* pBuf,CRecordProperty* pRecordProperty);
-	static void SerialChannelInfo(unsigned char* pBuf,std::vector<CChannle *>& channels);
-	static void SerialChannelSample(unsigned char* pBuf,std::vector<CChannle *>& channels);
+	static void SerialChannelInfo(unsigned char* pBuf,std::vector<CChannel *>& channels);
+	static void SerialChannelSample(unsigned char* pBuf,std::vector<CChannel *>& channels);
 
 	// 反持久化
-	static int ReserialHeader(unsigned char* pBuf,CRecord* pRecord);
+	static int ReserialHeader(unsigned char* pBuf,CDatRecord* pRecord);
 	static int ReserialStationInfo(unsigned char* pBuf,CRadarStation* pStation);
 	static int ReserialRecordInfo(unsigned char* pBuf,CRecordProperty* pRecordProperty);
-	static int ReserialChannelInfo(unsigned char* pBuf,std::vector<CChannle *>& channels);
-	static int ReserialChannelSample(unsigned char* pBuf,std::vector<CChannle *>& channels);
+	static int ReserialChannelInfo(unsigned char* pBuf,unsigned short chCount,std::vector<CChannel *>& channels);
+	static int ReserialChannelSample(unsigned char* pBuf,std::vector<CChannel *>& channels);
 };
 

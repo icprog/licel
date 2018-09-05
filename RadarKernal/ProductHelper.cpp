@@ -27,6 +27,7 @@ BOOL CProductHelper::LoadAtmosphereModel(CString modelPath)
 
 void CProductHelper::LoadRecords(vector<CDatRecord *> *pRecordList)
 {
+	/*
 	m_pModel->ClearModel();
 	m_pModel->m_pRecords = pRecordList;
 	std::vector<CDatRecord *>::iterator it = m_pModel->m_pRecords->begin();
@@ -49,13 +50,13 @@ void CProductHelper::LoadRecords(vector<CDatRecord *> *pRecordList)
 	}
 	//EndWaitCursor();
 
-	dlg->CloseWindow();
+	dlg->CloseWindow();*/
 }
 
 CDatRecord* CProductHelper::AddEmptyRecord(CAcquireHelper* pAcquireHelper)
 {
 	CDatRecord* pRecord = m_pModel->AddEmptyLidarRecord(pAcquireHelper->m_ChannelNum,
-												   pAcquireHelper->m_CurvePoints);
+												   pAcquireHelper->m_CurvePoint);
 	// 设置站点属性
 	pRecord->m_pRadarStation = &(pAcquireHelper->m_RadarStation);
 
