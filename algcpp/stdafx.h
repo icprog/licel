@@ -13,4 +13,8 @@
 
 
 #include "Algorithm.h"
+#ifdef _DEBUG
+#pragma comment(lib,"Algorithm_D.lib")
+#else 
 #pragma comment(lib,"Algorithm.lib")
+#endif

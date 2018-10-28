@@ -98,17 +98,6 @@ int LicelAcq_Start(unsigned int acccount,unsigned int curvepoint,HWND hMsgWnd)
 	Licel_clips = new short[curvepoint+1];
 	Licel_normaleized = new double[curvepoint+1];
 
-	/*data_accu_0 = new long[curvepoint];
-	data_accu_1 = new long[curvepoint];
-	data_clip_0 = new short[curvepoint];
-	data_clip_1 = new short[curvepoint];
-	data_phys_0 = new double[curvepoint];
-	data_phys_1 = new double[curvepoint];
-	data_mV_0 = new double[curvepoint];
-	data_mV_1 = new double[curvepoint];
-	data_LSW = new unsigned short int[2 * (curvepoint + 1)];
-	data_MSW = new unsigned short int[2 * (curvepoint + 1)];*/
-
 	for(int i=0;i<Licel_Card_TR_Count;i++)
 	{
 		Licel_analog_pBuf[i] = new double[curvepoint];

@@ -4,275 +4,56 @@
 #include "stdafx.h"
 #include "algcpp.h"
 #include "math.h"
-#include <fstream>
-#include <iostream>
-using namespace std;
 
-typedef struct tagATMOSPHEREMODEL
+ALGCPP_API void RegularCalc(double* signal,int DataNum, double* regularSignal)
 {
-	unsigned int modelNum;
-	double *ModelAltitude;
-	double *ModelTemperature;
-	double *ModelPressure;
-}ATMOSPHEREMODEL;
-
-ATMOSPHEREMODEL gb_AtmosphereModel;
-ATMOSPHEREMODEL gb_AtmosphereModel_Interp;
-double gb_SineOFAngle = 0.44;
-
-double S1 = 50; 
-double S2 = 8 * 3.14159265 / 3; 
-
-int iw = 0;
-
-int alg_Smooth(double* Data, int DataNum, int Span)
-{
-	double *TempData = new double[DataNum];
-	memset(TempData, 0, sizeof(double)*DataNum);
-
-	double TempSum = 0;
-	double TempDif = 0;
-	int i,j;
-
-	if (Span % 2 == 0)
-	{
-		int nSegment = Span >> 1;
-
-		for (i = 0; i<DataNum; i++)
-		{
-			if (i<nSegment)
-			{
-				for (j = 0; j <= i + nSegment; j++)
-					TempSum += Data[j];
-				TempData[i] = TempSum / (i + 1 + nSegment)*Span;
-				TempSum = 0;
-			}
-			else if (i<DataNum - nSegment)
-				TempData[i] = TempData[i - 1] + Data[i + nSegment] - Data[i - nSegment];
-			else
-			{
-				for (j = i - nSegment - 1; j<DataNum; j++)
-					TempSum += Data[j];
-				TempData[i] = TempSum / (DataNum - i - 1 + nSegment + 2)*Span;
-				TempSum = 0;
-			}
-		}
-	}
-	else 
-	{
-		int nSegmentRight = (Span - 1) / 2;
-		int nSegmentLeft = (Span + 1) / 2;
-
-		for (i = 0;i<DataNum;i++)
-		{
-			if (i<nSegmentLeft)
-			{
-				for (j = 0; j <= i + nSegmentRight; j++)
-					TempSum += Data[j];
-				TempData[i] = TempSum / (i + 1 + nSegmentRight)*Span;
-				TempSum = 0;
-			}
-			else if (i<DataNum - nSegmentRight)
-				TempData[i] = TempData[i - 1] + Data[i + nSegmentRight] - Data[i - nSegmentLeft];
-			else
-			{
-				for (j = i - nSegmentRight; j<DataNum; j++)
-					TempSum += Data[j];
-				TempData[i] = TempSum / (DataNum - (i + 1 - nSegmentRight) + 1)*Span;
-				TempSum = 0;
-			}
-		}
-	}
-	for (i = 0; i<DataNum; i++)
-		Data[i] = TempData[i] / Span;
-	delete[] TempData;
-	return 0;
+	unsigned long* uSignal = new unsigned long[DataNum];
+	for(int i=0;i<DataNum;i++)
+		uSignal[i] = signal[i];
+	SignalPreprocess(uSignal,DataNum,regularSignal);
+	delete[]  uSignal;
 }
 
-int alg_Interp(double* pX, double* pY, int PointNum, double x, double& y)
-{
-	int i;
-	for (i = 1; i<PointNum; i++)
-	{
-		if (x <= *(pX + i))
-		{
-			y = (x - pX[i]) / (pX[i - 1] - pX[i])*pY[i - 1] +
-				(x - pX[i - 1]) / (pX[i] - pX[i - 1])*pY[i];
-			break;
-		}
-		if (i == PointNum)
-			return 0;
-	}
-	return 0;
-}
-
-int ExtinctionMolCalc(double* Temperature, double* Pressure, int DataNum, double Wavelength, double* Data)
-{
-	double StdTemperature = 296; // K
-	double StdPressure = 1.013e5; // Pa
-	double LoschmidtNum = 2.479e25; // molecules per m^3
-	double StdWavelength = 550; // nm
-	double ExtBackRatio = 8 * 3.14159265 / 3; // extinction-to-backscatter ratio
-	double CrossSectionMol; // Rayleigh backscatter cross section per molecule, m^2 sr^-1
-	double CrossSectionMolRatio = 5.45e-32;
-
-	CrossSectionMol = pow(StdWavelength / Wavelength, 4)*CrossSectionMolRatio;
-
-	int i;
-	for (i = 0; i<DataNum; i++)
-	{
-		Data[i] = (StdTemperature / Temperature[i])*(Pressure[i] / StdPressure)*LoschmidtNum*CrossSectionMol*ExtBackRatio;
-	}
-	return 0;
-}
-
-int InterpCalc(double* pRange,int DataNum)
-{
-	return 0;
-}
-
-ALGCPP_API int BackgroundNoise(double* Range_inst,double* Signal_inst,int DataNum,double* averge,double* deviation)
-{
-	unsigned int idx = 0;
-	bool bRangeFind = false;
-	for(;idx<DataNum;idx++)
-	{
-		if(Range_inst[idx] >= 10000)//10km处
-		{
-			bRangeFind = true;
-			break;
-		}
-	}
-
-	if(bRangeFind = false)
-		return 0;
-
-	unsigned int i;
-	double sum = 0;
-	for(i=0;(i<50) && (i+idx < DataNum);i++)
-		sum += Signal_inst[idx + i];
-	(*averge) = sum / (double)i;
-
-	unsigned int j;
-	double dsum = 0;
-	for(j=0;j<i;j++)
-		dsum = pow((Signal_inst[idx + j] - *averge),2.0);
-	(*deviation) = sqrt(dsum / (double)i);
-
-	return 1;
-}
-
-ALGCPP_API int Fernald(double* Range_inst, double* Signal_inst, int DataNum, double* Extinction)
-{
-	double *Range = new double[DataNum];
-	double *Signal = new double[DataNum];
-	memcpy(Range,Range_inst,sizeof(double)*DataNum);
-	memcpy(Signal,Signal_inst,sizeof(double)*DataNum);
-
-	for (unsigned int i = 0; i<DataNum; i++)
-		Range[i] *= gb_SineOFAngle;
-
-	double RangeStep = Range[1] - Range[0]; // 
-	double RangeRef = 9e3;  
-	int OrderRef = 150/*(int)ceil(RangeRef / RangeStep)*/; // config
-
-	for(unsigned int i=0;i<DataNum;i++)
-		Extinction[i] = 0;
-	
-	alg_Smooth(Signal, DataNum, 3); 
-
-	double SignalNoise = 0;
-	for (unsigned int i = DataNum - 200; i<DataNum; i++) 
-		SignalNoise += Signal[i];
-	SignalNoise /= 201;
-	for (unsigned int i = 0; i<DataNum; i++)
-		Signal[i] -= SignalNoise;
-
-	double *Temperature = new double[DataNum];
-	memset(Temperature, 0, sizeof(double)*DataNum);
-	double *Pressure = new double[DataNum];
-	memset(Pressure, 0, sizeof(double)*DataNum);
-
-	for (unsigned int i = 0; i<DataNum; i++)
-	{
-		alg_Interp(gb_AtmosphereModel.ModelAltitude, gb_AtmosphereModel.ModelTemperature, 2001, Range[i], Temperature[i]);
-		alg_Interp(gb_AtmosphereModel.ModelAltitude, gb_AtmosphereModel.ModelPressure, 2001, Range[i], Pressure[i]);
-	}
-
-	double *ExtinctionMol = new double[DataNum];
-	memset(ExtinctionMol, 0, sizeof(double)*DataNum);
-	ExtinctionMolCalc(Temperature, Pressure, DataNum, 532, ExtinctionMol); 
-	double ExtinctionRef = ExtinctionMol[OrderRef - 1];
-
-	double *TempExtMolInt = new double[OrderRef]; 
-	for(unsigned int i=0;i<OrderRef;i++)
-		TempExtMolInt[i] = 0.0;
-
-	for (unsigned int i = 0; i < OrderRef; i++)
-	{
-		for (unsigned int j = i; j < OrderRef; j++)
-		{
-			TempExtMolInt[i] += (ExtinctionMol[j] * RangeStep);
-		}
-	}
-
-	double *Temp1 = new double[OrderRef];
-	memset(Temp1, 0, sizeof(double)*OrderRef);
-	for (unsigned int i = 0; i<OrderRef; i++)
-		Temp1[i] = Signal[i] * pow(Range[i], 2)*exp(2 * (S1 / S2 - 1)*TempExtMolInt[i]);
-		
-	double SignalRef = 0; //
-	for (unsigned int i = OrderRef - 19;i<OrderRef + 19;i++) // 
-		SignalRef += Signal[i]*pow(Range[i],2);
-	SignalRef /= 39;
-	double Temp2 = abs(SignalRef) / (0 + S1 / S2*ExtinctionRef);
-
-	double *Temp3 = new double[OrderRef];
-	memset(Temp3, 0, sizeof(double)*OrderRef);
-	for (unsigned int i = 0; i<OrderRef; i++)
-	{
-		for (unsigned int j = i; j < OrderRef; j++)
-		{
-			Temp3[i] += Temp1[j] * RangeStep;
-		}
-	}
-
-	for (unsigned int i = 0; i<OrderRef; i++)
-	{
-		Extinction[i] = -S1 / S2*ExtinctionMol[i] + Temp1[i] / (Temp2 + Temp3[i]);
-		Extinction[i] *= 1000;
-	}
-
-	delete[] Temperature;
-	delete[] Pressure;
-	delete[] TempExtMolInt;
-	delete[] Temp1;
-	delete[] Temp3;
-
-	return 0;
-}
-
-ALGCPP_API void DepolarCalc(double kfactor,double DataNum,double* InData1,double* InData2,double* OutData)
+ALGCPP_API void DepolarCalc(double kfactor,double DataNum,double* regularSignal1,double* regularSignal2,double* depolar)
 {
 	for(int i=0;i<DataNum;i++)
-		(*(OutData+i)) = kfactor * (*(InData1+i)) / (*(InData2+i));
+		(*(depolar+i)) = kfactor * (*(regularSignal1+i)) / (*(regularSignal2+i));
 }
 
-ALGCPP_API void OpticDepthCalc(double* Range_inst,double* Extinction,int DataNum,double* depth)
+ALGCPP_API void BackScatterCalc(int DataNum, double* regularSignal, double rangeResolution, double RangeRef, double Wavelength, double* depolar, double* backScatter)
 {
-	//去盲区后对消光系数求积分
-	double dis = Range_inst[1] - Range_inst[0];
+	double* overlap = new double[DataNum];
+	for(int i=0;i<DataNum;i++)
+		overlap[i] = 1.0;
+
+	GetBackscatter(regularSignal,DataNum,rangeResolution,RangeRef,Wavelength,depolar,overlap,backScatter);
+	delete[] overlap;
+}
+
+ALGCPP_API void ExtinctionCalc(int DataNum, double* backScatter, double* extinction)
+{
+	GetExtinction(backScatter,DataNum,extinction);
+}
+
+ALGCPP_API void CloudCalc(double rangeResolution, double* regularSignal,int DataNum,double* cloud_base,double* cloud_top,int& cloud_num)
+{
+	//GetCloudInfo(regularSignal,DataNum,rangeResolution,cloud_base,cloud_top,cloud_num);
+}
+
+ALGCPP_API void OpticDepthCalc(double rangeResolution, double* Extinction,int DataNum,double* depth)
+{
+	//去除盲区后对消光系数求积分
 	(*depth) = 0;
 	for(unsigned int i=0;i<DataNum;i++)
 	{
-		(*depth) += Extinction[i] * dis;
+		(*depth) += (Extinction[i] * rangeResolution);
 	}
 }
 
 void alg_HeightAverge(double* Range_inst,double* Signal_inst,int DataNum)
 {
 	//输入数据为距离平方之后的信号
-	//500以内高度求平均
+	//对500m以内的回波信号求平均，步长为5
 	unsigned int i=0;
 	for(;i<DataNum;i++)
 	{
@@ -283,7 +64,7 @@ void alg_HeightAverge(double* Range_inst,double* Signal_inst,int DataNum)
 			Signal_inst[i] = (Signal_inst[i-2] + Signal_inst[i-1] + Signal_inst[i] + Signal_inst[i+1] + Signal_inst[i+2])/5.0;
 	}
 
-	//500~1000以内高度求平局
+	//500m~1000m以内的回波信号求平均，步长为9
 	for(;i<DataNum;i++)
 	{
 		if(Range_inst[i] > 1000)
@@ -295,7 +76,7 @@ void alg_HeightAverge(double* Range_inst,double* Signal_inst,int DataNum)
 		Signal_inst[i] /= 9.0;
 	}
 
-	//1000~2000以内高度求平局
+	//1000m~2000m以内的回波信号求平均，步长为13
 	for(;i<DataNum;i++)
 	{
 		if(Range_inst[i] > 2000)
@@ -307,7 +88,7 @@ void alg_HeightAverge(double* Range_inst,double* Signal_inst,int DataNum)
 		Signal_inst[i] /= 13.0;
 	}
 
-	//
+	//对2000m以上的回波信号求平均，步长为17
 	for(;i<DataNum;i++)
 	{
 		if(DataNum - i > 8)
@@ -320,25 +101,32 @@ void alg_HeightAverge(double* Range_inst,double* Signal_inst,int DataNum)
 	}
 }
 
-ALGCPP_API void AtmosphereBoundaryCalc(double* Range_inst,double** Signal_inst,int DataNum,int FrameNum,int period,double* boundary)
+ALGCPP_API void BoundaryCalc(double* Range_inst,double** regularSignal,int DataNum, int FrameNum, int period, double* boundary)
 {
 	unsigned int reso = 10*60;
 	unsigned int interval = reso / period;
 
+	double **signal = new double*[FrameNum];
+	for(int i=0;i<FrameNum;i++)
+	{
+		signal[i] = new double[DataNum];
+		memcpy(signal[i],regularSignal[i],sizeof(double) * DataNum);
+	}
+
 	for(unsigned int k=0;k<FrameNum;k++)
 	{
-		alg_HeightAverge(Range_inst,Signal_inst[k],DataNum);
+		alg_HeightAverge(Range_inst,signal[k],DataNum);
 
 		if(k < interval)
 			continue;
 
 		for(unsigned int i=0;i<DataNum;i++)
 		{
-			Signal_inst[k][i]=0;
+			signal[k][i]=0;
 			for(unsigned int j=0;j<interval;j++)
-				Signal_inst[k][i] += Signal_inst[k][i-j];
+				signal[k][i] += signal[k][i-j];
 
-			Signal_inst[k][i] /= interval;
+			signal[k][i] /= interval;
 		}
 	}
 
@@ -349,12 +137,12 @@ ALGCPP_API void AtmosphereBoundaryCalc(double* Range_inst,double** Signal_inst,i
 		for(unsigned int i=0;i<DataNum;i++)
 		{
 			if(i == 0)
-				Signal_inst[k][i] = (Signal_inst[k][i+1] - Signal_inst[k][i]) / dis;
+				signal[k][i] = (signal[k][i+1] - signal[k][i]) / dis;
 			else if(i == DataNum -1)
-				Signal_inst[k][i] = (Signal_inst[k][i] - Signal_inst[k][i-1]) / dis;
-			else Signal_inst[k][i] = (Signal_inst[k][i+1] - Signal_inst[k][i-1]) / (2*dis);
+				signal[k][i] = (signal[k][i] - signal[k][i-1]) / dis;
+			else signal[k][i] = (signal[k][i+1] - signal[k][i-1]) / (2*dis);
 		}
-		alg_HeightAverge(Range_inst,Signal_inst[k],DataNum);
+		alg_HeightAverge(Range_inst,signal[k],DataNum);
 	}
 
 	//求二阶梯度
@@ -363,10 +151,10 @@ ALGCPP_API void AtmosphereBoundaryCalc(double* Range_inst,double** Signal_inst,i
 		for(unsigned int i=0;i<DataNum;i++)
 		{
 			if(i == 0)
-				Signal_inst[k][i] = (Signal_inst[k][i+1] - Signal_inst[k][i]) / dis;
+				signal[k][i] = (signal[k][i+1] - signal[k][i]) / dis;
 			else if(i == DataNum -1)
-				Signal_inst[k][i] = (Signal_inst[k][i] - Signal_inst[k][i-1]) / dis;
-			else Signal_inst[k][i] = (Signal_inst[k][i+1] - Signal_inst[k][i-1]) / (2*dis);
+				signal[k][i] = (signal[k][i] - signal[k][i-1]) / dis;
+			else signal[k][i] = (signal[k][i+1] - signal[k][i-1]) / (2*dis);
 		}
 	}
 
@@ -377,8 +165,8 @@ ALGCPP_API void AtmosphereBoundaryCalc(double* Range_inst,double** Signal_inst,i
 			if(i < 1)
 				continue;
 
-			if(Signal_inst[k][i] > 0 &&
-				Signal_inst[k][i-1] < 0 &&
+			if(signal[k][i] > 0 &&
+				signal[k][i-1] < 0 &&
 				Range_inst[i] > 300 &&
 				Range_inst[i] < 3000 )
 			{
@@ -387,56 +175,34 @@ ALGCPP_API void AtmosphereBoundaryCalc(double* Range_inst,double** Signal_inst,i
 			}
 		}
 	}
+
+	for(int i=0;i<FrameNum;i++)
+		delete[] signal[i];
+	delete[] signal;
 }
 
-ALGCPP_API void VisiblityCalc(double* Range_inst,double* Extinction,int DataNum,double* visiblity)
+ALGCPP_API void VisiblityCalc(double* Extinction,int DataNum,double* visiblity)
 {
-	double a1 = 0.02;
-	double a2 = 0.05;
+	double a = 0.02;
 	for(unsigned int i=0;i<DataNum;i++)
-		visiblity[i] = -log(a1)/Extinction[i];
+		visiblity[i] = -log(a) / Extinction[i];
 }
 
-ALGCPP_API int LoadAtmosphereModel(char* path)
+ALGCPP_API void MixCalc(double rangeResolution,double* Extinction,int DataNum,double* mix)
 {
-	const unsigned int MODEL_MAX = 2100;
-	ifstream f(path);
-	if (f.bad())
-		return -1;
+	double a = 0.06;
+	double b = 0.7;
 
-	double *ModelAltitude = new double[MODEL_MAX];
-	double *ModelTemperature = new double[MODEL_MAX];
-	double *ModelPressure = new double[MODEL_MAX];
-	double range;
-	unsigned int idx = 0;
-	while (!f.eof())
-	{
-		f >> ModelAltitude[idx] >> ModelTemperature[idx] >> ModelPressure[idx]>>range;
-		idx++;
-	}
-
-	gb_AtmosphereModel.modelNum = idx;
-	gb_AtmosphereModel.ModelTemperature = ModelTemperature;
-	gb_AtmosphereModel.ModelAltitude = ModelAltitude;
-	gb_AtmosphereModel.ModelPressure = ModelPressure;
-
-	f.close();
-	return idx;
+	(*mix) = 0;
+	for(unsigned int i=0;i<DataNum;i++)
+		(*mix) += (Extinction[i] * rangeResolution * i * a * b);
 }
 
-ALGCPP_API void ReleaseAtmosphereModel()
+ALGCPP_API void GasoloidPotencyCalc(double* Extinction,int DataNum,double* gasoloid)
 {
-	delete[] gb_AtmosphereModel.ModelTemperature;
-	delete[] gb_AtmosphereModel.ModelAltitude;
-	delete[] gb_AtmosphereModel.ModelPressure;
-}
+	double a = 200;//532nm波长的参数
+	double b = 157;
 
-ALGCPP_API void CloudCalc(double* Range_inst,double* Signal_inst,int DataNum,double* cloud_base,double* cloud_top,int& cloud_num)
-{
-	double* signal = new double[DataNum];
-	double* range = new double[DataNum];
-	memcpy(signal,Signal_inst,sizeof(double) * DataNum);
-	memcpy(range,Range_inst,sizeof(double) * DataNum);
-
-	GetCloudInfo(signal,range,DataNum,1,cloud_base,cloud_top,cloud_num);
+	for(unsigned int i=0;i<DataNum;i++)
+		gasoloid[i] = a * Extinction[i] + b;
 }

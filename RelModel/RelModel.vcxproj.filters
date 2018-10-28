@@ -39,18 +39,6 @@
     <ClCompile Include="Sample.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Channel.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ChannelProperty.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RadarStation.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RecordProperty.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RelModel.h">
@@ -72,18 +60,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Sample.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Channel.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ChannelProperty.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="RadarStation.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="RecordProperty.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

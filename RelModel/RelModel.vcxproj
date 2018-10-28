@@ -99,12 +99,8 @@
     <None Include="res\RelModel.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Channel.cpp" />
-    <ClCompile Include="ChannelProperty.cpp" />
     <ClCompile Include="DatModel.cpp" />
     <ClCompile Include="DatRecord.cpp" />
-    <ClCompile Include="RadarStation.cpp" />
-    <ClCompile Include="RecordProperty.cpp" />
     <ClCompile Include="RelModel.cpp" />
     <ClCompile Include="Sample.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -113,12 +109,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Channel.h" />
-    <ClInclude Include="ChannelProperty.h" />
     <ClInclude Include="DatModel.h" />
     <ClInclude Include="DatRecord.h" />
-    <ClInclude Include="RadarStation.h" />
-    <ClInclude Include="RecordProperty.h" />
     <ClInclude Include="RelModel.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sample.h" />

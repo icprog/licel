@@ -10,14 +10,14 @@ public:
 	~CDatModel(void);
 
 public:
-	vector<CDatRecord* > *m_pLidarRecords;
-	
+	vector<CDatRecord* > *m_pRecords;
+
 public:
 	void ClearModel();
+	void RemoveRecord(unsigned int count);
 	void PerpareModel();
-	void AddRealTimeLidarRecord(CDatRecord* pRecord);
-	CDatRecord* AddEmptyLidarRecord(unsigned int ch_count,unsigned int sample_count);
-
-	int SetAtomshereModel(CString path);
+	unsigned int Count();
+	void AddRealTimeRecord(CDatRecord* pRecord);
+	CDatRecord* AddEmptyRecord(unsigned int sampleChannels,unsigned int sampleNums,double *pRange);
 };
 

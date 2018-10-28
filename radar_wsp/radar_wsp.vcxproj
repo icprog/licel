@@ -53,13 +53,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\LabPacks\Visual C++\Include;C:\Program Files %28x86%29\Codejock Software\MFC\Xtreme ToolkitPro v15.3.1\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\PlotLab5.0.1\Include;..\..\Xtreme Toolkit15.3.1\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm200 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Codejock Software\MFC\Xtreme ToolkitPro v15.3.1\Lib\vc100;C:\Program Files %28x86%29\LabPacks\Visual C++\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Xtreme Toolkit15.3.1\Lib\vc100;..\..\PlotLab5.0.1\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
@@ -122,13 +122,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AdvancedProductView.h" />
+    <ClInclude Include="AxisConfigHelper.h" />
     <ClInclude Include="AxisSettingsDlg.h" />
     <ClInclude Include="BtnST.h" />
     <ClInclude Include="CaptureTaskDlg.h" />
+    <ClInclude Include="ColorStatusBar.h" />
     <ClInclude Include="DataBrowserDlg.h" />
+    <ClInclude Include="LicelSettingsPage.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="ProductBaseView.h" />
+    <ClInclude Include="RecordDlg.h" />
     <ClInclude Include="SaveSettingsDlg.h" />
     <ClInclude Include="RadarFormView.h" />
     <ClInclude Include="radar_wsp.h" />
@@ -139,13 +143,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdvancedProductView.cpp" />
+    <ClCompile Include="AxisConfigHelper.cpp" />
     <ClCompile Include="AxisSettingsDlg.cpp" />
     <ClCompile Include="BtnST.cpp" />
     <ClCompile Include="CaptureTaskDlg.cpp" />
+    <ClCompile Include="ColorStatusBar.cpp" />
     <ClCompile Include="DataBrowserDlg.cpp" />
+    <ClCompile Include="LicelSettingsPage.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ProductBaseView.cpp" />
+    <ClCompile Include="RecordDlg.cpp" />
     <ClCompile Include="SaveSettingsDlg.cpp" />
     <ClCompile Include="RadarFormView.cpp" />
     <ClCompile Include="radar_wsp.cpp" />

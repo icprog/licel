@@ -25,5 +25,6 @@
         "iosfwd": "cpp"
     },
     "editor.fontFamily": "'Courier New'",
-    "editor.fontSize": 15
+    "editor.fontSize": 15,
+    "files.encoding": "gb2312"
 }

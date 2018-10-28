@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RelModel", "RelModel\RelMod
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LicelAcq", "LicelAcq\LicelAcq.vcxproj", "{87FB64ED-FE8A-4126-AEE2-960925BA1636}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FormatFactory", "FormatFactory\FormatFactory.vcxproj", "{7E1D27D9-AA14-413F-93D6-810EB5E1C923}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -47,6 +49,10 @@ Global
 		{87FB64ED-FE8A-4126-AEE2-960925BA1636}.Debug|Win32.Build.0 = Debug|Win32
 		{87FB64ED-FE8A-4126-AEE2-960925BA1636}.Release|Win32.ActiveCfg = Release|Win32
 		{87FB64ED-FE8A-4126-AEE2-960925BA1636}.Release|Win32.Build.0 = Release|Win32
+		{7E1D27D9-AA14-413F-93D6-810EB5E1C923}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7E1D27D9-AA14-413F-93D6-810EB5E1C923}.Debug|Win32.Build.0 = Debug|Win32
+		{7E1D27D9-AA14-413F-93D6-810EB5E1C923}.Release|Win32.ActiveCfg = Release|Win32
+		{7E1D27D9-AA14-413F-93D6-810EB5E1C923}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

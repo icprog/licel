@@ -58,6 +58,7 @@
 #define IDR_TASKMENU                    172
 #define IDI_BLACK_ICON                  174
 #define IDI_GREEN_ICON                  175
+#define IDD_LICELSETTINGSDLG            179
 #define IDC_RECORDLIST                  1000
 #define IDC_EDIT1                       1002
 #define IDC_COMBO5                      1002
@@ -86,6 +87,7 @@
 #define IDC_SAVEPATHEDIT                1006
 #define IDC_COMBO_CONDUCTOR2            1006
 #define IDC_EDIT_STEPANGLE              1006
+#define IDC_EDIT5                       1006
 #define IDC_COMBO3                      1007
 #define IDC_EDIT_DBNAME                 1007
 #define IDC_EDIT_STEPANGLE2             1007
@@ -146,6 +148,12 @@
 #define IDC_COMBO_REPEAT                1064
 #define IDC_COMBO_CONDITION             1065
 #define IDC_COMBO_PERIOD                1068
+#define IDD_RECORDDLG                   1072
+#define IDC_LIST                        1073
+#define IDC_COMBO_TRIGTYPE              1074
+#define IDC_COMBO6                      1075
+#define IDC_COMBO_INPUTRANGE            1075
+#define IDC_SPIN1                       1076
 #define ID_DATA_LOCALFILES              32774
 #define ID_DATA_DATABASE                32775
 #define ID_PRODUCT_SIGNAL_1ST           32779
@@ -341,14 +349,34 @@
 #define ID_32981                        32981
 #define ID_PRODUCT_CLOUD_5TH            32982
 #define ID_PRODUCT_CLOUD_6TH            32983
+#define ID_CONTEXTMENU_32984            32984
+#define ID_AXISCONFIGURE_PRINT          32985
+#define ID_32986                        32986
+#define ID_PRODUCT_VIEWSWITCH           32987
+#define ID_32988                        32988
+#define ID_32989                        32989
+#define ID_32990                        32990
+#define ID_PRODUCT_VISIBLITY_1ST        32991
+#define ID_PRODUCT_VISIBLITY_2ND        32992
+#define ID_PRODUCT_VISIBLITY_3RD        32993
+#define ID_32994                        32994
+#define ID_32995                        32995
+#define ID_32996                        32996
+#define ID_32997                        32997
+#define ID_PRODUCT_BACKSCATTER_1ST      32998
+#define ID_PRODUCT_BACKSCATTER_2ND      32999
+#define ID_PRODUCT_BACKSCATTER_3RD      33000
+#define ID_33001                        33001
+#define ID_TOOL_SCREENCOPY              33002
+#define ID_33003                        33003
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        178
-#define _APS_NEXT_COMMAND_VALUE         32984
-#define _APS_NEXT_CONTROL_VALUE         1072
+#define _APS_NEXT_RESOURCE_VALUE        180
+#define _APS_NEXT_COMMAND_VALUE         33004
+#define _APS_NEXT_CONTROL_VALUE         1077
 #define _APS_NEXT_SYMED_VALUE           123
 #endif
 #endif

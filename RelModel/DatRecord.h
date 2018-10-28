@@ -1,53 +1,46 @@
 ﻿#pragma once
-
+#include "Sample.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <vector>
-
-#include "RadarStation.h"
-#include "ChannelProperty.h"
-#include "Channel.h"
-#include "RecordProperty.h"
+using namespace std;
 
 class __declspec(dllexport) CDatRecord
 {
 public:
 	CDatRecord();
 	~CDatRecord(void);
-
-	typedef enum tagRecordType
-	{
-		RecordType_Lidar = 0, //Lidar原始数据
-        RecordType_Product,    //Lidar产品数据
-		RecordType_Sum
-	}RecordType;
-
-    static char* m_RecordTypeString[RecordType_Sum];
-
-	typedef void(*fpHeaderDecoder)(unsigned char*, CDatRecord*);
-	typedef void(*fpRadarStationDecoder)(unsigned char*, CRadarStation*);
-	typedef void(*fpRecordPropertyDecoder)(unsigned char*, CRecordProperty*);
-	typedef void(*fpChannelDecoder)(unsigned char*, std::vector<CChannel *>&);
-
+	
 public:
-	CString m_src;
-	RecordType m_Type; 
+	unsigned long m_Id;
+	CTime m_Time;                //采集时间	
+	short m_Mode;                //采集模式
+	double m_FyAngle;            //俯仰角度
+	double m_FwAngle;            //方位角度
+	double m_SampleFreq;         //采样频率
+	unsigned short m_Chs;        //通道数
+	unsigned short m_SampleNum;  //样本个数
+	unsigned short m_FramePeriod;//累计周期
+	CString m_Station;           //站点
+	CString m_Conductor;         //操作者
+	CString m_Comment;           //备注
 
-	CRadarStation* m_pRadarStation;
-	CRecordProperty* m_pRecordProperty;
-	std::vector<CChannel *> m_channels;
+	CSample *m_pSamples;              //原始信号
+	CSample *m_pRegular;              //预处理后信号
+	CSample *m_pBackScatter;          //后向散射系数
+	CSample *m_pExtinctionCoefficient;//消光系数
+	CSample *m_pDeplorRatio;          //退偏振比
+
+	CSample *m_pCloud;                //云高
+	CSample *m_pOpticDepth;           //光学厚度
+	CSample *m_pBoundary;             //边界层高度
+	CSample *m_pVisiblity;            //垂直能见度
+	CSample *m_pMix;                  //混合层高度
+	CSample *m_pGasoloidPotency;      //气溶胶浓度
 
 public:
 	void Clear();
-	
-	BOOL AttachRecordFile(CString recordFile,fpHeaderDecoder fp);
-	BOOL DecodeStationInfo(fpRadarStationDecoder fp);
-	BOOL DecodeRecordProperty(fpRecordPropertyDecoder fp);
-	BOOL DecodeChannelProperty(fpChannelDecoder fp);
-	BOOL DecodeChannelSample(fpChannelDecoder fp);
-
-	BOOL StoreToFile(CString folder);
 };
 

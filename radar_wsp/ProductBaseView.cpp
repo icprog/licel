@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "radar_wsp.h"
 #include "ProductBaseView.h"
-
+#include "Radar_wspDoc.h"
 
 // CProductBaseView
 
@@ -20,6 +20,10 @@ CProductBaseView::CProductBaseView()
 	m_heightInterval = 50;
 	m_datetimeInterval = 30;
 	m_curvePointsSize = 300;
+
+	m_pSelectedWaterfall = NULL;
+	m_pSelectedScope = NULL;
+	m_pHookedRecord = NULL;
 }
 
 CProductBaseView::~CProductBaseView()
@@ -59,11 +63,11 @@ void CProductBaseView::ClearViewData()
 		if(m_pProductView[i] == NULL)
 			continue;
 
-		//m_pProductView[i]->m_pWaterfall->Data.Clear();
+		m_pProductView[i]->m_pWaterfall->Data.Clear();
 	}
 }
 
-BOOL CProductBaseView::DelProductView(CProductHelper::ProductType product,unsigned int ch)
+BOOL CProductBaseView::DelProductView(CProductHelper::ProductType product,CProductHelper::ProductChannelType ch)
 {
 	if(!IsProductViewExist(product,ch))
 		return TRUE;
@@ -107,7 +111,7 @@ int CProductBaseView::GetValidProductElementCount()
 	return sum;
 }
 
-BOOL CProductBaseView::IsProductViewExist(CProductHelper::ProductType product,unsigned int ch)
+BOOL CProductBaseView::IsProductViewExist(CProductHelper::ProductType product,CProductHelper::ProductChannelType ch)
 {
 	//int sum = 0;
 	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
@@ -123,7 +127,7 @@ BOOL CProductBaseView::IsProductViewExist(CProductHelper::ProductType product,un
 	return FALSE;
 }
 
-int CProductBaseView::GetProductViewIdx(CProductHelper::ProductType product,unsigned int ch)
+int CProductBaseView::GetProductViewIdx(CProductHelper::ProductType product,CProductHelper::ProductChannelType ch)
 {
 	int sum = 0;
 	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
@@ -156,12 +160,100 @@ void CProductBaseView::OnPaint()
 	dc.FillSolidRect(rt,RGB(0,0,0));
 }
 
-BOOL CProductBaseView::AddProductView(CProductHelper::ProductType product,unsigned int ch)
+BOOL CProductBaseView::AddProductView(CProductHelper::ProductType product,CProductHelper::ProductChannelType ch)
 {
 	return TRUE;
+}
+
+void CProductBaseView::StartRealTimeView(CAcquireHelper* pAcquireHelper)
+{
+	m_heightInterval = pAcquireHelper->GetHeightScaleFactor();
+	m_datetimeInterval = pAcquireHelper->GetDtScaleFactor();
+	m_curvePointsSize = pAcquireHelper->GetChannelDistCount();
+
+	m_tSpan = m_datetimeInterval * m_CurvesPerScreen;
 }
 
 void CProductBaseView::ReLayoutProductView()
 {
 
+}
+
+CString CProductBaseView::BuildScreenImgFolder(CTime &tInfo,CProductHelper::ProductType productType)
+{
+	CString strFolder;
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)GetDocument();
+	
+	strFolder.Format(_T("\\%d年"),tInfo.GetYear());
+	strFolder = pDoc->m_SavePath + strFolder;
+	if(!PathFileExists(strFolder))
+		CreateDirectory(strFolder,NULL);
+
+	strFolder.Format(_T("\\%d年\\%02d月"),tInfo.GetYear(),tInfo.GetMonth());
+	strFolder = pDoc->m_SavePath + strFolder;
+	if(!PathFileExists(strFolder))
+		CreateDirectory(strFolder,NULL);
+
+	strFolder.Format(_T("\\%d年\\%02d月\\%02d日"),tInfo.GetYear(),tInfo.GetMonth(),tInfo.GetDay());
+	strFolder = pDoc->m_SavePath + strFolder;
+	if(!PathFileExists(strFolder))
+		CreateDirectory(strFolder,NULL);
+
+	if(productType == CProductHelper::ProductType_OrginSignal)
+	{
+		strFolder = strFolder + _T("\\原始数据");
+		if(!PathFileExists(strFolder))
+			CreateDirectory(strFolder,NULL);
+
+		strFolder = strFolder + _T("\\LIDAR");
+		if(!PathFileExists(strFolder))
+			CreateDirectory(strFolder,NULL);
+
+		return strFolder;
+	}
+	else if(productType < CProductHelper::ProductType_Cloud)
+	{
+
+	}
+	else
+	{
+
+	}
+}
+
+void CProductBaseView::SaveScreenImg()
+{
+	/*CRadar_wspDoc *pDoc = (CRadar_wspDoc *)GetDocument();
+	ImgObsFileNameParser *pImgObsFileNameParser = new ImgObsFileNameParser();
+
+	pImgObsFileNameParser->_Time1ST = m_tStart;
+	pImgObsFileNameParser->_Time2ST = CTime::GetCurrentTime();
+
+	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
+	{
+		if(m_pProductView[i] == NULL)
+			continue;
+
+		pImgObsFileNameParser->_CapMode = pDoc->m_AcquireHelper.GetMode();
+		pImgObsFileNameParser->_WaveLength = CProductHelper::CHANNEL_WAVE_LENGTH[m_pProductView[i]->m_Ch];
+		pImgObsFileNameParser->_WaveState = CProductHelper::CHANNEL_WAVE_STATE[m_pProductView[i]->m_Ch];
+
+		switch(pDoc->m_AcquireHelper.GetMode())
+		{
+			case CAcquireHelper::AcquireMode_Fixed:
+				pImgObsFileNameParser->_AziS = pDoc->m_ServoCtlHelper.m_pProperty->m_engine.GetFwAngle();
+				pImgObsFileNameParser->_EleS = pDoc->m_ServoCtlHelper.m_pProperty->m_engine.GetFyAngle();
+				pImgObsFileNameParser->_AccTime = pDoc->m_AcquireHelper.GetDtScaleFactor();
+			break;
+			case CAcquireHelper::AcquireMode_PPI:
+
+			break;
+			case CAcquireHelper::AcquireMode_RHI:
+
+			break;
+			default:
+			break;
+		}
+
+	}*/
 }

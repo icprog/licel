@@ -1,4 +1,4 @@
-// MainFrm.cpp : implementation of the CMainFrame class
+﻿// MainFrm.cpp : implementation of the CMainFrame class
 //
 
 #include "stdafx.h"
@@ -10,6 +10,7 @@
 #include "DataBrowserDlg.h"
 #include "SaveSettingsDlg.h"
 #include "TaskEditDlg.h"
+#include "LicelSettingsPage.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -24,11 +25,14 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CLOSE()
 	ON_COMMAND(XTP_ID_CUSTOMIZE, OnCustomize)
 	ON_COMMAND(ID_PRODUCT_SIGNAL_1ST,OnProductSignal1st)
+	ON_COMMAND(ID_PRODUCT_SIGNAL_2ND, &CMainFrame::OnProductSignal2nd)
 	ON_MESSAGE(XTPWM_TASKPANEL_NOTIFY, OnTaskPanelNotify)
 	ON_COMMAND(ID_DATA_LOCALFILES, &CMainFrame::OnDataLocalfiles)
 	ON_COMMAND(ID_PRODUCT_EXTINCTIONCOEFFICIENT_1ST, &CMainFrame::OnProductExtinctioncoefficient1st)
 	ON_MESSAGE(WM_CAPTUREEVENT,&CMainFrame::OnCaptureEvent)
+	ON_COMMAND(ID_PRODUCT_EXTINCTIONCOEFFICIENT_2ND, &CMainFrame::OnProductExtinctioncoefficient2nd)
 	ON_COMMAND(ID_PRODUCT_DEPOLAR_RATIO, &CMainFrame::OnProductDepolarRatio)
+	ON_COMMAND(ID_PRODUCT_CLOUD, &CMainFrame::OnProductCloud)
 	ON_WM_TIMER()
 	ON_COMMAND(ID_OPTION_ADVANCE, &CMainFrame::OnOptionAdvance)
 	ON_COMMAND(ID_OPTION_SAVE, &CMainFrame::OnOptionSave)
@@ -37,17 +41,21 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_PRODUCT_SIGNAL_3RD, &CMainFrame::OnProductSignal3rd)
 	ON_COMMAND(ID_PRODUCT_EXTINCTIONCOEFFICIENT_3RD, &CMainFrame::OnProductExtinctioncoefficient3rd)
 	ON_COMMAND(ID_PRODUCT_OPTICDEPTH, &CMainFrame::OnProductOpticdepth)
-	ON_COMMAND(ID_PRODUCT_CLOUD_1ST, &CMainFrame::OnProductCloud1st)
 	ON_COMMAND(ID_PRODUCT_ATMOSBOUNDARY, &CMainFrame::OnProductAtmosboundary)
-	ON_COMMAND(ID_PRODUCT_VISIBLE, &CMainFrame::OnProductVisible)
-	ON_COMMAND(ID_PRODUCT_CLOUD_3RD, &CMainFrame::OnProductCloud3rd)
 	ON_COMMAND(ID_TOOL_TASKEDITOR, &CMainFrame::OnToolTaskeditor)
 	ON_COMMAND(ID_CAPTURE_SCHEDULER, &CMainFrame::OnCaptureScheduler)
 	ON_COMMAND(ID_PRODUCT_MIXHEIGHT, &CMainFrame::OnProductMixheight)
 	ON_COMMAND(ID_PRODUCT_MASSCONCENTRATION, &CMainFrame::OnProductMassconcentration)
-	ON_COMMAND(ID_PRODUCT_SIGNAL_5TH, &CMainFrame::OnProductSignal5th)
-	ON_COMMAND(ID_PRODUCT_EXTINCTIONCOEFFICIENT_5TH, &CMainFrame::OnProductExtinctioncoefficient5th)
-	ON_COMMAND(ID_PRODUCT_CLOUD_5TH, &CMainFrame::OnProductCloud5th)
+	ON_COMMAND(ID_PRODUCT_VIEWSWITCH, &CMainFrame::OnProductViewswitch)
+	ON_COMMAND(ID_PRODUCT_VISIBLITY_1ST, &CMainFrame::OnProductVisiblity1st)
+	ON_COMMAND(ID_PRODUCT_VISIBLITY_2ND, &CMainFrame::OnProductVisiblity2nd)
+	ON_COMMAND(ID_PRODUCT_VISIBLITY_3RD, &CMainFrame::OnProductVisiblity3rd)
+	ON_COMMAND(ID_PRODUCT_BACKSCATTER_1ST, &CMainFrame::OnProductBackscatter1st)
+	ON_COMMAND(ID_PRODUCT_BACKSCATTER_2ND, &CMainFrame::OnProductBackscatter2nd)
+	ON_COMMAND(ID_PRODUCT_BACKSCATTER_3RD, &CMainFrame::OnProductBackscatter3rd)
+	ON_COMMAND(ID_TOOL_SCREENCOPY, &CMainFrame::OnToolScreencopy)
+
+
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -71,6 +79,8 @@ static UINT uHideCmds[] =
 
 CMainFrame::CMainFrame()
 {
+	m_pCaptureTaskDlg = NULL;
+	m_pAdvancedProductView = NULL;
 	m_bInitial = FALSE;
 }
 
@@ -109,7 +119,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// Create ToolBar
 	CXTPToolBar* pMainToolBar = (CXTPToolBar*)
-		pCommandBars->Add(_T("��׼"), xtpBarTop);
+		pCommandBars->Add(_T("主工具条"), xtpBarTop);
 	if (!pMainToolBar || !pMainToolBar->LoadToolBar(IDR_MAINFRAME,0))
 	{
 		TRACE0("Failed to create toolbar\n");
@@ -155,13 +165,13 @@ BOOL CMainFrame::InitStatusBar()
 		return FALSE;      // fail to create
 	}
 
-	m_wndStatusBar.SetPaneInfo(0,ID_INDICATOR_SOURCE,SBPS_NORMAL,500);
+	m_wndStatusBar.SetPaneInfo(0,ID_INDICATOR_SOURCE,SBPS_NORMAL,600);
 	m_wndStatusBar.SetPaneText(0,_T(""));
 
 	CString path = ((Cradar_wspApp* )AfxGetApp())->GetAppPath();
 	HICON hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\source.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
 	m_wndStatusBar.SetPaneInfo(1,ID_INDICATOR_SOURCE,SBPS_NORMAL,220);
-	m_wndStatusBar.SetPaneText(1,_T("��ѡ������Դ"));
+	m_wndStatusBar.SetPaneText(1,_T("实时采集"));
 	m_wndStatusBar.GetStatusBarCtrl().SetIcon(1,hIcon);
 
 	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\download.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
@@ -171,23 +181,22 @@ BOOL CMainFrame::InitStatusBar()
 
 	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\radar.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
 	m_wndStatusBar.SetPaneInfo(3,ID_INDICATOR_ANGLE,SBPS_NORMAL,200);
-	m_wndStatusBar.SetPaneText(3,_T("����0.0 ��λ0.0"));
+	m_wndStatusBar.SetPaneText(3,_T(""));
 	m_wndStatusBar.GetStatusBarCtrl().SetIcon(3,hIcon);
 
 	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\laser.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
-	m_wndStatusBar.SetPaneInfo(4,ID_INDICATOR_LASER,SBPS_NORMAL,200);
-	m_wndStatusBar.SetPaneText(4,_T("���� �¶�0.0 ǿ��0.0"));
+	m_wndStatusBar.SetPaneInfo(4,ID_INDICATOR_LASER,SBT_OWNERDRAW,300);
+	m_wndStatusBar.SetPaneText(4,_T(""));
 	m_wndStatusBar.GetStatusBarCtrl().SetIcon(4,hIcon);
 	
 	m_wndStatusBar.SetPaneInfo(5,ID_INDICATOR_MAINPROGRESS,SBPS_STRETCH ,100);
 		CRect rect;
 	m_wndStatusBar.GetItemRect(5,&rect);
 	m_ProgressCtrl.Create(WS_VISIBLE|WS_CHILD|PBS_SMOOTH,rect,&m_wndStatusBar,0);
-	m_ProgressCtrl.SetRange(0, 100);  
-	m_ProgressCtrl.SetPos(100);
-
-	//m_bStatusBarCreate = TRUE;
-
+	m_ProgressCtrl.SetRange(0, 100);
+	m_ProgressCtrl.SetStep(1);
+	m_ProgressCtrl.SetPos(0);
+	
 	return TRUE;
 }
 
@@ -195,7 +204,7 @@ void CMainFrame::SetCommandBarIcon()
 {
 	CString path = ((Cradar_wspApp* )AfxGetApp())->GetAppPath();
 	HICON hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\customadd_16.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
-	XTPImageManager()->SetIcon(hIcon,ID_PRODUCT_ADDCUSTOMPRODUCTDISPLAYSTYLE,CSize(16,16));
+	XTPImageManager()->SetIcon(hIcon,ID_PRODUCT_VIEWSWITCH,CSize(16,16));
 
 	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\localfile_16.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
 	XTPImageManager()->SetIcon(hIcon,ID_DATA_LOCALFILES,CSize(16,16));
@@ -207,7 +216,7 @@ void CMainFrame::SetCommandBarIcon()
 	XTPImageManager()->SetIcon(hIcon,ID_CAPTURE_SCHEDULER,CSize(16,16));
 
 	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\taskeditor.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
-	XTPImageManager()->SetIcon(hIcon,ID_TOOL_TASKEDITOR,CSize(32,32));
+	XTPImageManager()->SetIcon(hIcon,ID_TOOL_TASKEDITOR,CSize(16,16));
 
 	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(),path + _T("resource\\savepath.ico"),IMAGE_ICON,16,16,LR_LOADFROMFILE);
 	XTPImageManager()->SetIcon(hIcon,ID_OPTION_SAVE,CSize(16,16));
@@ -300,10 +309,10 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_pAdvancedProductView = new CAdvancedProductView();
 	CRect rt(0,0,0,0);
 	m_pAdvancedProductView->Create(NULL,NULL,WS_CHILD,rt,&m_wndSplitter,IDD_ADVANCEDPRODUCTVIEW,pContext);
-	m_pAdvancedProductView->OnInitialUpdate();
+	//m_pAdvancedProductView->OnInitialUpdate();
 	m_pAdvancedProductView->ShowWindow(SW_HIDE);
 
-	return true;
+	return TRUE;
 	//return CXTPFrameWnd::OnCreateClient(lpcs, pContext);
 }
 
@@ -343,21 +352,24 @@ void CMainFrame::CreateTaskPanelItems()
 	CXTPTaskPanelGroup* pGroupBaseProducts = m_wndTaskPanel.AddGroup(IDS_BASE_PRODUCTS);
 	pGroupBaseProducts->SetIconIndex(0);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_1ST, -1);
+	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_2ND, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_3RD, -1);
-	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_SIGNAL_5TH, -1);
+	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_BACKSCATTER_1ST, -1);
+	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_BACKSCATTER_2ND, -1);
+	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_BACKSCATTER_3RD, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_1ST, -1);
+	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_2ND, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_3RD, -1);
-	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_EXTINCTIONCOEFFICIENT_5TH, -1);
 	pGroupBaseProducts->AddLinkItem(ID_PRODUCT_DEPOLAR_RATIO, -1);
 	pGroupBaseProducts->SetSpecialGroup();
 
 	CXTPTaskPanelGroup* pGroupCustomDislpay = m_wndTaskPanel.AddGroup(IDS_CUSTOM_DISPLAY);
+	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_OPTICDEPTH, -1);
+	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_VISIBLITY_1ST, -1);
+	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_VISIBLITY_2ND, -1);
+	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_VISIBLITY_3RD, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_ATMOSBOUNDARY, -1);
-	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD_1ST, -1);
-	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD_3RD, -1);
-	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_CLOUD_5TH, -1);
-	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_VISIBLE, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_MIXHEIGHT, -1);
 	pGroupCustomDislpay->AddLinkItem(ID_PRODUCT_MASSCONCENTRATION, -1);
 	pGroupCustomDislpay->SetIconIndex(1);
@@ -399,20 +411,29 @@ LRESULT CMainFrame::OnTaskPanelNotify(WPARAM wParam, LPARAM lParam)
 			case ID_PRODUCT_SIGNAL_1ST:
 				OnProductSignal1st();
 				break;
+			case ID_PRODUCT_SIGNAL_2ND:
+				OnProductSignal2nd();
+				break;
 			case ID_PRODUCT_SIGNAL_3RD:
 				OnProductSignal3rd();
 				break;
-			case ID_PRODUCT_SIGNAL_5TH:
-				OnProductSignal5th();
+			case ID_PRODUCT_BACKSCATTER_1ST:
+				OnProductBackscatter1st();
+				break;
+			case ID_PRODUCT_BACKSCATTER_2ND:
+				OnProductBackscatter2nd();
+				break;
+			case ID_PRODUCT_BACKSCATTER_3RD:
+				OnProductBackscatter3rd();
 				break;
 			case ID_PRODUCT_EXTINCTIONCOEFFICIENT_1ST:
 				OnProductExtinctioncoefficient1st();
 				break;
+			case ID_PRODUCT_EXTINCTIONCOEFFICIENT_2ND:
+				OnProductExtinctioncoefficient2nd();
+				break;
 			case ID_PRODUCT_EXTINCTIONCOEFFICIENT_3RD:
 				OnProductExtinctioncoefficient3rd();
-				break;
-			case ID_PRODUCT_EXTINCTIONCOEFFICIENT_5TH:
-				OnProductExtinctioncoefficient5th();
 				break;
 			case ID_PRODUCT_DEPOLAR_RATIO:
 				OnProductDepolarRatio();
@@ -423,17 +444,17 @@ LRESULT CMainFrame::OnTaskPanelNotify(WPARAM wParam, LPARAM lParam)
 			case ID_PRODUCT_ATMOSBOUNDARY:
 				OnProductAtmosboundary();
 				break;
-			case ID_PRODUCT_CLOUD_1ST:
-				OnProductCloud1st();
+			case ID_PRODUCT_CLOUD:
+				OnProductCloud();
 				break;
-			case ID_PRODUCT_CLOUD_3RD:
-				OnProductCloud3rd();
+			case ID_PRODUCT_VISIBLITY_1ST:
+				OnProductVisiblity1st();
 				break;
-			case ID_PRODUCT_CLOUD_5TH:
-				OnProductCloud5th();
+			case ID_PRODUCT_VISIBLITY_2ND:
+				OnProductVisiblity2nd();
 				break;
-			case ID_PRODUCT_VISIBLE:
-				OnProductVisible();
+			case ID_PRODUCT_VISIBLITY_3RD:
+				OnProductVisiblity3rd();
 				break;
 			case ID_PRODUCT_MIXHEIGHT:
 				OnProductMixheight();
@@ -459,6 +480,9 @@ LRESULT CMainFrame::OnTaskPanelNotify(WPARAM wParam, LPARAM lParam)
 			case ID_TOOL_TASKEDITOR:
 				OnToolTaskeditor();
 				break;
+			case ID_TOOL_SCREENCOPY:
+				OnToolScreencopy();
+				break;
 			default:
 				break;
 			}
@@ -482,7 +506,16 @@ void CMainFrame::OnProductSignal1st()
 	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,1);
+	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,CProductHelper::ProductChannelType_1ch);
+}
+
+void CMainFrame::OnProductSignal2nd()
+{
+	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
+	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
+	ps = pDocTemplate->GetFirstDocPosition();
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
+	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,CProductHelper::ProductChannelType_2ch);
 }
 
 void CMainFrame::OnProductSignal3rd()
@@ -491,16 +524,34 @@ void CMainFrame::OnProductSignal3rd()
 	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,3);
+	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,CProductHelper::ProductChannelType_3ch);
 }
 
-void CMainFrame::OnProductSignal5th()
+void CMainFrame::OnProductBackscatter1st()
 {
 	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
 	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_OrginSignal,5);
+	pDoc->AddProduct(CProductHelper::ProductType_BackScatter,CProductHelper::ProductChannelType_1ch);
+}
+
+void CMainFrame::OnProductBackscatter2nd()
+{
+	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
+	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
+	ps = pDocTemplate->GetFirstDocPosition();
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
+	pDoc->AddProduct(CProductHelper::ProductType_BackScatter,CProductHelper::ProductChannelType_2ch);
+}
+
+void CMainFrame::OnProductBackscatter3rd()
+{
+	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
+	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
+	ps = pDocTemplate->GetFirstDocPosition();
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
+	pDoc->AddProduct(CProductHelper::ProductType_BackScatter,CProductHelper::ProductChannelType_3ch);
 }
 
 void CMainFrame::OnProductExtinctioncoefficient1st()
@@ -509,7 +560,16 @@ void CMainFrame::OnProductExtinctioncoefficient1st()
 	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,1);
+	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,CProductHelper::ProductChannelType_1ch);
+}
+
+void CMainFrame::OnProductExtinctioncoefficient2nd()
+{
+	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
+	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
+	ps = pDocTemplate->GetFirstDocPosition();
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
+	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,CProductHelper::ProductChannelType_2ch);
 }
 
 void CMainFrame::OnProductExtinctioncoefficient3rd()
@@ -518,16 +578,7 @@ void CMainFrame::OnProductExtinctioncoefficient3rd()
 	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,3);	
-}
-
-void CMainFrame::OnProductExtinctioncoefficient5th()
-{
-	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-	ps = pDocTemplate->GetFirstDocPosition();
-	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,5);	
+	pDoc->AddProduct(CProductHelper::ProductType_ExtinctionCoefficient,CProductHelper::ProductChannelType_3ch);
 }
 
 void CMainFrame::OnProductDepolarRatio()
@@ -539,20 +590,44 @@ void CMainFrame::OnProductDepolarRatio()
 	pDoc->AddProduct(CProductHelper::ProductType_DepolarizationRatio);
 }
 
-void CMainFrame::OnDataLocalfiles()
+void CMainFrame::OnProductCloud()
 {
-	CDataBrowserDlg dlg;
-
-	if(dlg.DoModal() != IDOK)
-		return;
-
 	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
 	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->OpenRecords(dlg.m_pDatRecords);
-		
-	m_wndStatusBar.SetPaneText(1,_T("��ʷ����"));
+	pDoc->AddProduct(CProductHelper::ProductType_Cloud,CProductHelper::ProductChannelType_3ch);
+}
+
+void CMainFrame::OnDataLocalfiles()
+{
+	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
+	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
+	ps = pDocTemplate->GetFirstDocPosition();
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
+
+	CDataBrowserDlg dlg;
+	if(dlg.DoModal() != IDOK)
+		return;
+
+	KillTimer(2);
+	pDoc->StopRealTime();
+
+	//if(dlg.m_ResultMode == CAcquireHelper::AcquireMode_Fixed)
+	//{
+	//	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
+	//	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
+	//	ps = pDocTemplate->GetFirstDocPosition();
+	//	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
+	//	pDoc->OpenRecords(dlg.m_pDatRecords);
+	//}
+	//else
+	//{
+	//	//TODO:
+	//	CScannerDlg dlg;
+	//}
+
+	m_wndStatusBar.SetPaneText(1,_T("历史数据"));
 }
 
 LRESULT CMainFrame::OnCaptureEvent(WPARAM wParam,LPARAM lParam)
@@ -562,19 +637,18 @@ LRESULT CMainFrame::OnCaptureEvent(WPARAM wParam,LPARAM lParam)
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
 
-	if(wParam == 1)//�����ɼ�
+	if(wParam == 1)
 	{
 		if(lParam == 0)
 		{
-			if(!pDoc->m_bRTAcquire)
+			if(pDoc->m_WorkMode == CRadar_wspDoc::WorkMode_FILE)
 				return 0;
 
-			//CDatRecord *pRecord = new CDatRecord(); 
-			CSample *pSample/* pRecord->m_pSamples */ = new CSample(pDoc->m_AcquireHelper.GetChannelNum(),
-												pDoc->m_AcquireHelper.GetChannelDistCount(1),TRUE);
-			
-			LicelAcq_GetData(pSample->m_pData,pDoc->m_AcquireHelper.GetChannelDistCount(1));
-			pDoc->AddRealTimeRecord2Model(pSample/* pRecord */);
+			CDatRecord *pRecord = new CDatRecord();
+			pRecord->m_pSamples = new CSample(pDoc->m_AcquireHelper.GetChannelNum() + 1,
+										pDoc->m_AcquireHelper.GetChannelDistCount(),TRUE);
+
+			pDoc->AddRealTimeRecord2Model(pRecord);
 
 			pRecord->Clear();
 			delete pRecord;
@@ -605,6 +679,8 @@ void CMainFrame::UpdateCursorPos(CString& posString)
 
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
+	static BOOL bCaptureInit = FALSE;
+
 	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
 	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
 	ps = pDocTemplate->GetFirstDocPosition(); 
@@ -619,16 +695,29 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 		return;
 	}
 	else if(nIDEvent == 2)
-	{
 		pDoc->RealTimeHook();
-	}
 	
 	CXTPFrameWnd::OnTimer(nIDEvent);
 }
 
 void CMainFrame::OnOptionAdvance()
 {
-	
+	CXTPPropertySheet ps(_T("高级选项"));
+
+	CXTPPropertyPageListNavigator* pList = new CXTPPropertyPageListNavigator();
+	pList->SetListStyle(xtpListBoxOffice2007);
+	ps.SetNavigator(pList);
+
+	CLicelSettingsPage licelSettingsPage;
+	ps.AddPage(&licelSettingsPage);
+
+	ps.SetResizable();
+	ps.SetPageSize(CSize(250, 180));
+
+	if(ps.DoModal() == IDOK)
+	{
+		//licelSettingsPage.SaveConfigs();
+	}
 }
 
 void CMainFrame::OnOptionSave()
@@ -651,20 +740,17 @@ void CMainFrame::OnCaptureSingle()
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
 
-	CCaptureTaskDlg m_CaptureTaskDlg;
-	m_CaptureTaskDlg.SetCapturePeriod(pDoc->m_AcquireHelper.GetDtScaleFactor());
-	if(m_CaptureTaskDlg.DoModal() != IDOK)
-		return;
+	if(m_pCaptureTaskDlg == NULL)
+	{
+		m_pCaptureTaskDlg = new CCaptureTaskDlg();
+		m_pCaptureTaskDlg->SetCapturePeriod(pDoc->m_AcquireHelper.GetDtScaleFactor());
 
-	if(pDoc->m_AcquireHelper.GetDtScaleFactor() == m_CaptureTaskDlg.GetCapturePeriod())
-		return;
+		m_pCaptureTaskDlg->Create(IDD_CAPTURESETTINGDLG);
+	}
 
-	KillTimer(2);
-	pDoc->StopRealTime();
-	pDoc->StartRealTime(m_CaptureTaskDlg.GetCapturePeriod());
-	SetTimer(2,m_CaptureTaskDlg.GetCapturePeriod()*1000,NULL);
+	m_pCaptureTaskDlg->ShowWindow(SW_SHOW);
+	m_pCaptureTaskDlg->CenterWindow();
 }
-
 void CMainFrame::OnCaptureScheduler()
 {
 	
@@ -693,34 +779,7 @@ void CMainFrame::OnProductOpticdepth()
 	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_OpticDepth);	
-}
-
-void CMainFrame::OnProductCloud1st()
-{
-	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-	ps = pDocTemplate->GetFirstDocPosition();
-	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_Cloud,1);	
-}
-
-void CMainFrame::OnProductCloud3rd()
-{
-	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-	ps = pDocTemplate->GetFirstDocPosition();
-	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_Cloud,3);	
-}
-
-void CMainFrame::OnProductCloud5th()
-{
-	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
-	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
-	ps = pDocTemplate->GetFirstDocPosition();
-	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_Cloud,5);	
+	pDoc->AddProduct(CProductHelper::ProductType_OpticDepth);
 }
 
 void CMainFrame::OnProductAtmosboundary()
@@ -732,13 +791,31 @@ void CMainFrame::OnProductAtmosboundary()
 	pDoc->AddProduct(CProductHelper::ProductType_AtmosphereBoundary);	
 }
 
-void CMainFrame::OnProductVisible()
+void CMainFrame::OnProductVisiblity1st()
 {
 	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
 	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
 	ps = pDocTemplate->GetFirstDocPosition();
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
-	pDoc->AddProduct(CProductHelper::ProductType_Visiblity,0);	
+	pDoc->AddProduct(CProductHelper::ProductType_Visiblity,CProductHelper::ProductChannelType_1ch);
+}
+
+void CMainFrame::OnProductVisiblity2nd()
+{
+	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
+	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
+	ps = pDocTemplate->GetFirstDocPosition();
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
+	pDoc->AddProduct(CProductHelper::ProductType_Visiblity,CProductHelper::ProductChannelType_2ch);
+}
+
+void CMainFrame::OnProductVisiblity3rd()
+{
+	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
+	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
+	ps = pDocTemplate->GetFirstDocPosition();
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
+	pDoc->AddProduct(CProductHelper::ProductType_Visiblity,CProductHelper::ProductChannelType_3ch);
 }
 
 void CMainFrame::OnProductMixheight()
@@ -763,4 +840,70 @@ void CMainFrame::OnToolTaskeditor()
 {
 	CTaskEditDlg dlg;
 	dlg.DoModal();
+}
+
+void CMainFrame::OnProductViewswitch()
+{
+	POSITION ps = ((Cradar_wspApp*)AfxGetApp())->GetFirstDocTemplatePosition();
+	CDocTemplate *pDocTemplate = ((Cradar_wspApp*)AfxGetApp())->GetNextDocTemplate(ps);
+	ps = pDocTemplate->GetFirstDocPosition();
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)(pDocTemplate->GetNextDoc(ps));
+	pDoc->ProductViewSwitch();
+}
+
+void CMainFrame::OnToolScreencopy()
+{
+	CFileDialog dlg(FALSE);
+	if(dlg.DoModal() == IDCANCEL)
+		return;
+	CString savepath = dlg.GetPathName();
+
+	unsigned int cx = GetSystemMetrics(SM_CXSCREEN);
+	unsigned int cy = GetSystemMetrics(SM_CYSCREEN);
+    
+	HDC hScreenDC = GetDC()->m_hDC;
+    HDC hMemDC = CreateCompatibleDC(hScreenDC);
+    HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, cx, cy);
+    HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
+    BitBlt(hMemDC, 0, 0, cx, cy, hScreenDC, 0, 0, SRCCOPY);
+    SelectObject(hMemDC, hOldBitmap);
+    ::ReleaseDC(NULL, hScreenDC);
+   
+    size_t headerSize = sizeof(BITMAPINFOHEADER)+3*sizeof(RGBQUAD);
+    BYTE* pHeader = new BYTE[headerSize];
+    LPBITMAPINFO pbmi = (LPBITMAPINFO)pHeader;
+    memset(pHeader, 0, headerSize);
+    pbmi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    pbmi->bmiHeader.biBitCount = 0;
+    if (!GetDIBits(hMemDC, hBitmap, 0, 0, NULL, pbmi, DIB_RGB_COLORS))
+	{
+		MessageBox(_T("拷贝软件屏幕失败！"),_T("错误"),MB_ICONERROR);
+        return;
+	}
+   
+    BITMAPFILEHEADER bmf;
+    if (pbmi->bmiHeader.biSizeImage <= 0)
+        pbmi->bmiHeader.biSizeImage=pbmi->bmiHeader.biWidth*abs(pbmi->bmiHeader.biHeight)*(pbmi->bmiHeader.biBitCount+7)/8;
+    BYTE* pData = new BYTE[pbmi->bmiHeader.biSizeImage];
+    bmf.bfType = 0x4D42; bmf.bfReserved1 = bmf.bfReserved2 = 0;
+    bmf.bfSize = sizeof(BITMAPFILEHEADER)+ headerSize + pbmi->bmiHeader.biSizeImage;
+    bmf.bfOffBits = sizeof(BITMAPFILEHEADER) + headerSize;
+    if (!GetDIBits(hMemDC, hBitmap, 0, abs(pbmi->bmiHeader.biHeight), pData, pbmi, DIB_RGB_COLORS))
+    {
+        delete pData;
+		MessageBox(_T("拷贝软件屏幕失败！"),_T("错误"),MB_ICONERROR);
+        return;
+    }
+
+	CFile f;
+	f.Open(savepath,CFile::modeCreate | CFile::typeBinary | CFile::modeWrite);
+	f.Write(&bmf,sizeof(BITMAPFILEHEADER));
+	f.Write(pbmi, headerSize);
+	f.Write(pData, pbmi->bmiHeader.biSizeImage);
+	f.Close();
+
+    DeleteObject(hBitmap);
+    DeleteDC(hMemDC);
+
+    delete [] pData;
 }

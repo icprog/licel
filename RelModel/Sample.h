@@ -1,15 +1,5 @@
 #pragma once
 
-/*!
- * @class CSample
- * @brief PiePlot�ؼ���
- *
- *        PiePlot�ؼ��࣬�̳���CWnd���Ǽ������µ�α��ͼ���ٲ�ͼ�ؼ���
- *        ��һ�����ݰ��սǶȽ��л��ƣ����Ʋ��õ�
- *        ��ɫ�ǽ����ݵ�ֵ��Ϊlevelֵͨ��CLevelBar��
- *        ��ȡ��Ӧ����ɫ��
- */
-
 class __declspec(dllexport) CSample
 {
 public:
@@ -21,15 +11,15 @@ public:
 	const static unsigned int MAX_SAMPLE_COL = 8;
 	
 protected:
-	unsigned int m_Row;//ʵ��ʹ�ô�С
+	unsigned int m_Row;//��ʹ����
 	unsigned int m_Col;
-	unsigned int m_AllocateRow;//�����С
+	unsigned int m_AllocateRow;//������
 	
 public:
 	double* m_pData[MAX_SAMPLE_COL];
-	int GetLength() { return m_Row; }//��ȡʵ��ʹ�ó���
+	int GetLength() { return m_Row; }//��ȡʵ��ʹ����
 	int GetCol() { return m_Col; }
-	void Clear();
+	void Release();
 	
 	inline void Add(double *v,int cols);
 	void Acc(double *v[],int col,int row);

@@ -7,6 +7,8 @@
 #include "AxisSettingsDlg.h"
 #include "Radar_wspDoc.h"
 #include "MainFrm.h"
+#include "RecordDlg.h"
+
 #include <fstream>
 #include <iostream>
 using namespace std;
@@ -34,37 +36,46 @@ BEGIN_MESSAGE_MAP(CRadarFormView, CProductBaseView)
 	ON_COMMAND(ID_AXISCONFIGURE_LEVELAXIS, &CRadarFormView::OnAxisconfigureLevelaxis)
 	ON_COMMAND(ID_AXISCONFIGURE_AXISALLRESET, &CRadarFormView::OnAxisconfigureAixsAllReset)
 	ON_COMMAND(ID_AXISCONFIGURE_EXPORTIMG, &CRadarFormView::OnAxisconfigureExportImg)
+	ON_COMMAND(ID_AXISCONFIGURE_PRINT, &CRadarFormView::OnAxisconfigurePrint)
+	ON_COMMAND(ID_AXISCONFIGURE_TABLE, &CRadarFormView::OnAxisconfigureTable)
 END_MESSAGE_MAP()
 
 
 void CRadarFormView::OnInitialUpdate()
 {
 	CProductBaseView::OnInitialUpdate();
-	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)GetDocument();
-	AddProductView(CProductHelper::ProductType_OrginSignal,1);
-	AddProductView(CProductHelper::ProductType_OrginSignal,3);
-	AddProductView(CProductHelper::ProductType_OrginSignal,5);
+
+	AddProductView(CProductHelper::ProductType_OrginSignal,CProductHelper::ProductChannelType_1ch);
+	AddProductView(CProductHelper::ProductType_OrginSignal,CProductHelper::ProductChannelType_2ch);
+	AddProductView(CProductHelper::ProductType_OrginSignal,CProductHelper::ProductChannelType_3ch);
+
+	m_CurvesPerScreen = m_pProductView[0]->m_pWaterfall->XAxis.CurrentMax;
+
 	m_bInitial = TRUE;
 }
 
 void CRadarFormView::ScrollProductView()
 {
 	ClearViewData();
-	m_tSpan = 100*m_datetimeInterval;
-	m_tStart = CTime::GetCurrentTime();
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)GetDocument();
+	if(pDoc->m_ProductHelper.GetCount() != 0)
+		pDoc->m_ProductHelper.Remove(pDoc->m_ProductHelper.GetCount() - 1);
 	
-	//for(unsigned int i=0;i<CProductMgr::MAX_PRODUCT_VIEW;i++)
-	//{
-	//	if(m_pProductView[i] == NULL)
-	//		continue;
+	m_tStart = CTime::GetCurrentTime();
 
-	//	m_pProductView[i]->m_pWaterfall->XAxis.Min.DataValue = 0;
-	//	m_pProductView[i]->m_pWaterfall->XAxis.Min.Value = 0;
-	//	//m_pProductView[i]->m_pWaterfall->PostRefresh();
-	//	//m_pProductView[i]->m_pWaterfall->XAxis.Max.DataValue = m_tSpan/pDoc->m_DtScaleFactor;
-	//	//m_pProductView[i]->m_pWaterfall->XAxis.Max.Value = m_tSpan/pDoc->m_DtScaleFactor;
-	//	//m_pProductView[i]->m_pWaterfall->XAxis.Samples = m_tSpan/pDoc->m_DtScaleFactor;
-	//}
+	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
+	{
+		if(m_pProductView[i] == NULL)
+			continue;
+
+		m_pProductView[i]->m_pWaterfall->YAxis.Max.DataValue = m_curvePointsSize;
+		m_pProductView[i]->m_pWaterfall->YAxis.Max.Value = m_curvePointsSize;
+
+		m_pProductView[i]->m_pScope->YAxis.Max.DataValue = m_curvePointsSize * m_heightInterval;
+		m_pProductView[i]->m_pScope->YAxis.Max.Value = m_curvePointsSize * m_heightInterval;
+
+		m_pProductView[i]->m_pWaterfall->Invalidate();
+	}
 }
 
 void CRadarFormView::ScrollProductView(CTime &tStart,CTime &tEnd)
@@ -87,7 +98,7 @@ void CRadarFormView::ScrollProductView(CTime &tStart,CTime &tEnd)
 	//}
 }
 
-BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned int ch)
+BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,CProductHelper::ProductChannelType ch)
 {
 	if(IsProductViewExist(product,ch))
 		return TRUE;
@@ -97,6 +108,7 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 		return FALSE;
 
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)GetDocument();
+	CAxisConfigHelper::PTR_AxisSettings pAxisSettings = pDoc->m_AxisConfigHelper.GetProductConfig(product,ch);
 
 	m_pProductView[nIdx] = new ProductView;
 	m_pProductView[nIdx]->m_ProductType = product;
@@ -112,14 +124,11 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 	m_pProductView[nIdx]->m_pWaterfall->Align = CTAlign::alClient;
 	m_pProductView[nIdx]->m_pWaterfall->ToolBar.Visible = FALSE;
 	m_pProductView[nIdx]->m_pWaterfall->Title.Font.Charset = GB2312_CHARSET;
-	m_pProductView[nIdx]->m_pWaterfall->Title.Font.Size = 10;
+	m_pProductView[nIdx]->m_pWaterfall->Title.Font.Size = 11;
 	CString title(CProductHelper::PRODUCT_NAME[product]);
-	if(ch != 0)
-	{
-		CString strTemp(CProductHelper::CHANNEL_NAME[ch-1]);
-		title += _T("-");
-		title += strTemp;
-	}
+	CString strTemp(CProductHelper::CHANNEL_NAME[ch]);
+	title += _T("-");
+	title += strTemp;
 	m_pProductView[nIdx]->m_pWaterfall->Title.Text = title;
 	m_pProductView[nIdx]->m_pWaterfall->Title.Align = vaLeft;
 	
@@ -128,11 +137,13 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 	m_pProductView[nIdx]->m_pWaterfall->OnDataToolTip.Set(this,&CRadarFormView::OnTSLDataToolTip);
 	// 配置色条坐标
 	m_pProductView[nIdx]->m_pWaterfall->Levels.Axis.Autoscale = FALSE;
-	m_pProductView[nIdx]->m_pWaterfall->Levels.Axis.Max = 3000;
-	m_pProductView[nIdx]->m_pWaterfall->Levels.Axis.Min = 0;
+	m_pProductView[nIdx]->m_pWaterfall->Levels.Axis.Max = pAxisSettings->level_max;
+	m_pProductView[nIdx]->m_pWaterfall->Levels.Axis.Min = pAxisSettings->level_min;
+	m_pProductView[nIdx]->m_pWaterfall->Levels.Axis.ScaleMode = pAxisSettings->log_c ? smLogarithmic : smLinear;
 	m_pProductView[nIdx]->m_pWaterfall->Levels.Colors.Add(5);
 	m_pProductView[nIdx]->m_pWaterfall->Levels.Colors.Delete(0);
-	// 配置时间坐标
+	m_pProductView[nIdx]->m_pWaterfall->Levels.Visible = pAxisSettings->level_visible;
+
 	m_pProductView[nIdx]->m_pWaterfall->XAxis.Min.AutoScale = FALSE;
 	m_pProductView[nIdx]->m_pWaterfall->XAxis.Min.Value = 0;
 	m_pProductView[nIdx]->m_pWaterfall->XAxis.AxisLabel.Font.Charset = GB2312_CHARSET;
@@ -153,17 +164,17 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 	m_pProductView[nIdx]->m_pScope->Open(m_pProductView[nIdx]->m_pStatic[1]->m_hWnd);
 	m_pProductView[nIdx]->m_pScope->Align = CTAlign::alClient;
 	m_pProductView[nIdx]->m_pScope->ToolBar.Visible = FALSE;
-	m_pProductView[nIdx]->m_pScope->Title.Font.Charset = GB2312_CHARSET;
-	m_pProductView[nIdx]->m_pScope->Title.Text = _T("");
+	m_pProductView[nIdx]->m_pScope->Title.Visible = FALSE;
 	m_pProductView[nIdx]->m_pScope->OnMouseUp.Set(this,&CRadarFormView::OnTSLMouseUp);
 	
 	//配置值坐标轴
 	m_pProductView[nIdx]->m_pScope->XAxis.Min.AutoScale = FALSE;
-	m_pProductView[nIdx]->m_pScope->XAxis.Min.DataValue = 0;
-	m_pProductView[nIdx]->m_pScope->XAxis.Min.Value = 0;
+	m_pProductView[nIdx]->m_pScope->XAxis.Min.DataValue = pAxisSettings->default_min;
+	m_pProductView[nIdx]->m_pScope->XAxis.Min.Value = pAxisSettings->default_min;
 	m_pProductView[nIdx]->m_pScope->XAxis.Max.AutoScale = FALSE;
-	m_pProductView[nIdx]->m_pScope->XAxis.Max.DataValue = 42767;
-	m_pProductView[nIdx]->m_pScope->XAxis.Max.Value = 42767;
+	m_pProductView[nIdx]->m_pScope->XAxis.Max.DataValue = pAxisSettings->default_max;
+	m_pProductView[nIdx]->m_pScope->XAxis.Max.Value = pAxisSettings->default_max;
+	m_pProductView[nIdx]->m_pScope->XAxis.ScaleMode = pAxisSettings->log_t ? smLogarithmic : smLinear;
 	m_pProductView[nIdx]->m_pScope->XAxis.AxisLabel.Font.Charset = GB2312_CHARSET;
 	m_pProductView[nIdx]->m_pScope->XAxis.DataView.Lines.Visible = FALSE;
 	m_pProductView[nIdx]->m_pScope->XAxis.DataView.ZeroLine.Visible = FALSE;
@@ -174,8 +185,8 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 	m_pProductView[nIdx]->m_pScope->YAxis.Min.DataValue = 0;
 	m_pProductView[nIdx]->m_pScope->YAxis.Min.Value = 0;
 	m_pProductView[nIdx]->m_pScope->YAxis.Max.AutoScale = FALSE;
-	m_pProductView[nIdx]->m_pScope->YAxis.Max.DataValue = 30000;
-	m_pProductView[nIdx]->m_pScope->YAxis.Max.Value = 30000;
+	m_pProductView[nIdx]->m_pScope->YAxis.Max.DataValue = m_curvePointsSize * m_heightInterval;
+	m_pProductView[nIdx]->m_pScope->YAxis.Max.Value = m_curvePointsSize * m_heightInterval;
 	m_pProductView[nIdx]->m_pScope->YAxis.AxisLabel.Font.Charset = GB2312_CHARSET;
 	m_pProductView[nIdx]->m_pScope->YAxis.DataView.Lines.Visible = FALSE;
 	m_pProductView[nIdx]->m_pScope->YAxis.DataView.ZeroLine.Visible = FALSE;
@@ -186,6 +197,9 @@ BOOL CRadarFormView::AddProductView(CProductHelper::ProductType product,unsigned
 
 	VCL_Loaded();
 	ReLayoutProductView();
+
+	m_pProductView[nIdx]->m_pScope->XAxis.ZoomTo(pAxisSettings->min,pAxisSettings->max,FALSE);
+	m_pProductView[nIdx]->m_pScope->Hold = FALSE;
 
 	return TRUE;
 }
@@ -307,20 +321,8 @@ void __stdcall CRadarFormView::OnTSLMouseUp(VCLHANDLE Sender,CTMouseButton btn,C
 
 	CPoint pt;
 	GetCursorPos(&pt);
-	CString chName1(CProductHelper::CHANNEL_NAME[0]);
-	CString chName2(CProductHelper::CHANNEL_NAME[1]);
-	CString chName3(CProductHelper::CHANNEL_NAME[2]);
 	CString szText;
 	int nMenus = pContextMenu->GetMenuItemCount();
-	for(int j=0;j<nMenus;j++)
-	{
-		pContextMenu->GetMenuStringW(j,szText,MF_BYPOSITION);
-		if(szText == chName1 || szText == chName2 || szText == chName3)
-		{
-			pContextMenu->EnableMenuItem(j,MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
-			continue;
-		}
-	}
 
 	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
 	{
@@ -331,6 +333,9 @@ void __stdcall CRadarFormView::OnTSLMouseUp(VCLHANDLE Sender,CTMouseButton btn,C
 		{
 			m_pSelectedWaterfall = m_pProductView[i]->m_pWaterfall;
 			m_pSelectedScope = NULL;
+			m_SelectProductType = m_pProductView[i]->m_ProductType;
+			m_SelectChannelType = m_pProductView[i]->m_Ch;
+
 			for(int j=0;j<nMenus;j++)
 			{
 				pContextMenu->GetMenuStringW(j,szText,MF_BYPOSITION);
@@ -344,6 +349,8 @@ void __stdcall CRadarFormView::OnTSLMouseUp(VCLHANDLE Sender,CTMouseButton btn,C
 		{
 			m_pSelectedWaterfall = NULL;
 			m_pSelectedScope = m_pProductView[i]->m_pScope;
+			m_SelectProductType = m_pProductView[i]->m_ProductType;
+			m_SelectChannelType = m_pProductView[i]->m_Ch;
 
 			for(int j=0;j<nMenus;j++)
 			{
@@ -393,6 +400,16 @@ void __stdcall CRadarFormView::OnTSLDataToolTip(VCLHANDLE Sender,POINT &pt,CTSLR
 	CTime t = m_tStart + realPt.X * m_datetimeInterval;
 	sTime = t.Format(_T("%Y/%m/%d-%H:%M:%S "));
 
+	/*ËÑË÷Ê±¼ä¶ÔÓ¦µÄ¼ÇÂ¼*/
+	CProductHelper *pProductHelper = &(pDoc->m_ProductHelper);
+	m_pHookedRecord = pProductHelper->SearchRecord(t);
+	double fy = 0,fw = 0;
+	if(m_pHookedRecord != NULL)
+	{
+		fy = m_pHookedRecord->m_FyAngle;
+		fw = m_pHookedRecord->m_FwAngle;
+	}
+
 	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
 	{
 		if(m_pProductView[i] == NULL)
@@ -400,7 +417,10 @@ void __stdcall CRadarFormView::OnTSLDataToolTip(VCLHANDLE Sender,POINT &pt,CTSLR
 
 		if((m_pProductView[i]->m_pWaterfall)->Control.GetHandle() == Sender)
 		{
-			strToolTip.Format(_T("��λ�Ƕ�:270.90 �����Ƕ�:28.89 �߶�:%.0f "),realPt.Y * m_heightInterval);
+			strToolTip.Format(_T("·½Î»½Ç¶È:%.2f ¸©Ñö½Ç¶È:%.2f ¸ß¶È:%.0f "),
+								fw,
+								fy,
+								realPt.Y * m_heightInterval);
 			CString strDataVal;
 			CString strDataFormat(CProductHelper::PRODUCT_NAME_FORMAT[m_pProductView[i]->m_ProductType]);
 			strDataVal.Format(strDataFormat,m_pProductView[i]->m_pWaterfall->DataView.GetValueAtScale(realPt.X,realPt.Y));
@@ -417,74 +437,17 @@ void __stdcall CRadarFormView::OnTSLDataToolTip(VCLHANDLE Sender,POINT &pt,CTSLR
 
 void CRadarFormView::UpdateView(CDatModel* pModel)
 {
+	
+}
+
+void CRadarFormView::UpdateView(CDatModel* pModel,CProductHelper::ProductType product,CProductHelper::ProductChannelType ch)
+{
 	ASSERT(pModel);
 
 	unsigned int sum = pModel->m_pRecords->size();
 	CMainFrame *pMainFrame = (CMainFrame *)AfxGetMainWnd();
 
-	CDatRecord* pRecord = pModel->m_pRecords->at(0);
-	m_datetimeInterval = pRecord->m_FramePeriod;
-	m_heightInterval = CAcquireHelper::CalcHeightResolution(pRecord->m_SampleFreq);
-	m_curvePointsSize = pRecord->m_SampleNum;
-
-	ScrollProductView(pModel->m_pRecords->at(0)->m_Time,pModel->m_pRecords->at(sum-1)->m_Time);
-
 	unsigned int arraylen = 0;
-	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
-	{
-		if(m_pProductView[i] == NULL)
-			continue;
-
-		if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_OrginSignal)
-		{
-			vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
-			while(it != pModel->m_pRecords->end())
-			{
-				arraylen = (*it)->m_pSamples->GetLength();
-				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pSamples->m_pData[m_pProductView[i]->m_Ch],arraylen);
-				it++;
-			}
-		}
-		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_ExtinctionCoefficient)
-		{
-			vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
-
-			it = pModel->m_pRecords->begin();
-			while(it != pModel->m_pRecords->end())
-			{
-				arraylen = (*it)->m_pExtinctionCoefficient->GetLength();
-				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],arraylen);
-				it++;
-			}
-		}
-		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_DepolarizationRatio)
-		{
-			vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
-
-			it = pModel->m_pRecords->begin();
-			while(it != pModel->m_pRecords->end())
-			{
-				arraylen = (*it)->m_pDeplorRatio->GetLength();
-				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pDeplorRatio->m_pData[1],arraylen);
-				it++;
-			}
-		}
-	}
-}
-
-void CRadarFormView::UpdateView(CDatModel* pModel,CProductHelper::ProductType product,unsigned int ch)
-{
-	ASSERT(pModel);
-
-	// unsigned int idx;
-	// unsigned int sum = pModel->m_pRecords->size();
-	// if(sum <= 1)
-	// 	return;
-
-	CMainFrame *pMainFrame = (CMainFrame *)AfxGetMainWnd();
-	//unsigned int len = pModel->m_pRecords->at(0)->m_pSamples->GetLength();
-	//vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
-
 	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
 	{
 		if(m_pProductView[i] == NULL)
@@ -498,73 +461,56 @@ void CRadarFormView::UpdateView(CDatModel* pModel,CProductHelper::ProductType pr
 
 		if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_OrginSignal)
 		{
-			std::vector<CDatRecord*>::iterator it = pModel->m_pLidarRecords->begin();
-			while(it != pModel->m_pLidarRecords->end() - 1)
+			vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
+			while(it != pModel->m_pRecords->end()-1)
 			{
-				m_pProductView[i]->m_pWaterfall->Data.AddData(
-							(*it)->m_channles[m_pProductView[i]->m_Ch - 1].m_pSample->m_pData[0],
-							m_curvePointsSize);
+				arraylen = (*it)->m_pSamples->GetLength();
+				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pRegular->m_pData[m_pProductView[i]->m_Ch+1],arraylen);
+				it++;
+			}
+		}
+		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_BackScatter)
+		{
+			vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
+			while(it != pModel->m_pRecords->end()-1)
+			{
+				arraylen = (*it)->m_pSamples->GetLength();
+				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pBackScatter->m_pData[m_pProductView[i]->m_Ch+1],arraylen);
 				it++;
 			}
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_ExtinctionCoefficient)
 		{
-			// idx = 0;
-			// pMainFrame->UpdateWorkFlowState(0,sum);
-			// BeginWaitCursor();
-			// while(it != pModel->m_pRecords->end() - 1)
-			// {
-			// 	if((*it)->m_pExtinctionCoefficient == NULL)
-			// 		CProductHelper::Extinction((*it));
-			// 	idx++;
-			// 	it++;
-			// 	pMainFrame->UpdateWorkFlowState(IDS_WORKFLOW_EXTINCCOE,idx);
-			// }
-			// EndWaitCursor();
-			// pMainFrame->UpdateWorkFlowState(0,0);
+			vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
 
-			// it = pModel->m_pRecords->begin();
-			// while(it != pModel->m_pRecords->end() - 1)
-			// {
-			// 	m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],len);
-			// 	it++;
-			// }
+			while(it != pModel->m_pRecords->end()-1)
+			{
+				arraylen = (*it)->m_pExtinctionCoefficient->GetLength();
+				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch+1],arraylen);
+				it++;
+			}
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_DepolarizationRatio)
 		{
-			// idx = 0;
-			// pMainFrame->UpdateWorkFlowState(0,sum);
-			// BeginWaitCursor();
-			// while(it != pModel->m_pRecords->end())
-			// {
-			// 	if((*it)->m_pDeplorRatio == NULL)
-			// 		CProductHelper::Depolar((*it));
-			// 	idx++;
-			// 	it++;
-			// 	pMainFrame->UpdateWorkFlowState(IDS_WORKFLOW_DEPOLAR,idx);
-			// }
-			// EndWaitCursor();
-			// pMainFrame->UpdateWorkFlowState(0,0);
+			vector<CDatRecord* >::iterator it = pModel->m_pRecords->begin();
 
-			// it = pModel->m_pRecords->begin();
-			// while(it != pModel->m_pRecords->end())
-			// {
-			// 	m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pDeplorRatio->m_pData[1],len);
-			// 	it++;
-			// }
+			while(it != pModel->m_pRecords->end()-1)
+			{
+				arraylen = (*it)->m_pDeplorRatio->GetLength();
+				m_pProductView[i]->m_pWaterfall->Data.AddData((*it)->m_pDeplorRatio->m_pData[1],arraylen);
+				it++;
+			}
 		}
 	}
 }
 
-void CRadarFormView::UpdateViewFlyBy(CDatModel* pModel/* CDatRecord* pRecord */,BOOL bWaterFall)
+void CRadarFormView::UpdateView(CDatRecord* pRecord,BOOL bWaterFall)
 {
-	ASSERT(pModel);
-	unsigned int idxFlyby = pModel->m_pLidarRecords->size();
-	ASSERT(idxFlyby)
-	
-	double *nullBuf = new double[m_curvePointsSize];
-	memset(nullBuf,0x00,sizeof(double) * m_curvePointsSize);
+	ASSERT(pRecord);
 
+	double *pRange = pRecord->m_pSamples->m_pData[0];
+
+	unsigned int arraylen;
 	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
 	{
 		if(m_pProductView[i] == NULL)
@@ -572,23 +518,23 @@ void CRadarFormView::UpdateViewFlyBy(CDatModel* pModel/* CDatRecord* pRecord */,
 
 		if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_OrginSignal)
 		{
-			CDatRecord* pLidarRecord = pModel->m_pLidarRecords->at(idxFlyby - 1);
-			m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(
-								pLidarRecord->m_channels[m_pProductView[i]->m_Ch-1]->m_pSample->m_pData[0],
-								m_pRange,
-								m_curvePointsSize);
+			arraylen = pRecord->m_pSamples->GetLength();
+			m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pSamples->m_pData[m_pProductView[i]->m_Ch+1],pRange,arraylen);
+		}
+		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_BackScatter)
+		{
+			arraylen = pRecord->m_pSamples->GetLength();
+			m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pBackScatter->m_pData[m_pProductView[i]->m_Ch+1],pRange,arraylen);
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_ExtinctionCoefficient)
 		{
-			// if(pRecord->m_pExtinctionCoefficient == NULL)
-			// 	m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(nullBuf,pRange,len);
-			// else m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],pRange,len);
+			arraylen = pRecord->m_pSamples->GetLength();
+			m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch+1],pRange,arraylen);
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_DepolarizationRatio)
 		{
-			// if(pRecord->m_pDeplorRatio == NULL)
-			// 	m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(nullBuf,pRange,len);
-			// else m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pDeplorRatio->m_pData[1],pRange,len);
+			arraylen = pRecord->m_pSamples->GetLength();
+			m_pProductView[i]->m_pScope->Channels[0].Data.SetXYData(pRecord->m_pDeplorRatio->m_pData[1],pRange,arraylen);
 		}
 	}
 
@@ -596,7 +542,10 @@ void CRadarFormView::UpdateViewFlyBy(CDatModel* pModel/* CDatRecord* pRecord */,
 		return;
 
 	if(pRecord->m_Time - m_tStart > m_tSpan)
+	{
+		SaveScreenImg();
 		ScrollProductView();
+	}
 
 	for(unsigned int i=0;i<MAX_PRODUCT_VIEW_COUNT;i++)
 	{
@@ -605,56 +554,58 @@ void CRadarFormView::UpdateViewFlyBy(CDatModel* pModel/* CDatRecord* pRecord */,
 
 		if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_OrginSignal)
 		{
-			CDatRecord* pLidarRecord = pModel->m_pLidarRecords->at(idxFlyby - 1);
-			m_pProductView[i]->m_pWaterfall->Data.AddData(
-									pLidarRecord->m_channels[m_pProductView[i]->m_Ch-1]->m_pSample->m_pData[0],
-									m_curvePointsSize);
+			arraylen = pRecord->m_pSamples->GetLength();
+			m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pRegular->m_pData[m_pProductView[i]->m_Ch+1],arraylen);
+		}
+		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_BackScatter)
+		{
+			arraylen = pRecord->m_pSamples->GetLength();
+			m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pBackScatter->m_pData[m_pProductView[i]->m_Ch+1],arraylen);
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_ExtinctionCoefficient)
 		{
-			// if(pRecord->m_pExtinctionCoefficient == NULL)
-			// 	m_pProductView[i]->m_pWaterfall->Data.AddData(nullBuf,len);
-			// else m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch],len);
+			arraylen = pRecord->m_pExtinctionCoefficient->GetLength();
+			m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pExtinctionCoefficient->m_pData[m_pProductView[i]->m_Ch+1],arraylen);
 		}
 		else if(m_pProductView[i]->m_ProductType == CProductHelper::ProductType_DepolarizationRatio)
 		{
-			// if(pRecord->m_pDeplorRatio == NULL)
-			// 	m_pProductView[i]->m_pWaterfall->Data.AddData(nullBuf,len);
-			// else m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pDeplorRatio->m_pData[1],len);
+			arraylen = pRecord->m_pDeplorRatio->GetLength();
+			m_pProductView[i]->m_pWaterfall->Data.AddData(pRecord->m_pDeplorRatio->m_pData[1],arraylen);
 		}
 	}
 }
 
 void CRadarFormView::StartRealTimeView(CAcquireHelper* pAcquireHelper)
 {
-	m_heightInterval = pAcquireHelper->GetHeightScaleFactor();
-	m_datetimeInterval = pAcquireHelper->GetDtScaleFactor();
-	m_curvePointsSize = pAcquireHelper->GetChannelDistCount();
-	m_pRange = pAcquireHelper->GetRange();
-	
+	CProductBaseView::StartRealTimeView(pAcquireHelper);
 	ScrollProductView();
 }
 
 void CRadarFormView::OnAxisconfigureHorizontalaxis()
 {
 	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)GetDocument();
-	CAxisSettingsDlg dlg;
-	if(m_pSelectedScope != NULL)
-	{
-		dlg.m_Max = m_pSelectedScope->XAxis.CurrentMax;
-		dlg.m_Min = m_pSelectedScope->XAxis.CurrentMin;
-		dlg.m_Title = _T("ˮƽ����������");
-		dlg.m_bLogCheckEnable = TRUE;
-		dlg.m_bLogEnable = (m_pSelectedScope->XAxis.ScaleMode == smLogarithmic);
-		if(IDOK != dlg.DoModal())
-			return;
 
-		m_pSelectedScope->XAxis.ScaleMode = dlg.m_bLogEnable ? smLogarithmic : smLinear;
+	CAxisSettingsDlg dlg; 
+	if(m_pSelectedScope == NULL)
+		return;
 
-		m_pSelectedScope->XAxis.ZoomTo(dlg.m_Min,dlg.m_Max,FALSE);
-		m_pSelectedScope->Hold = FALSE;
-	}
-	else return;
+	dlg.m_Max = m_pSelectedScope->XAxis.CurrentMax;
+	dlg.m_Min = m_pSelectedScope->XAxis.CurrentMin;
+	dlg.m_Title = _T("Ë®Æ½×ø±êÖáÉèÖÃ");
+	dlg.m_bLogCheckEnable = TRUE;
+	dlg.m_bLogEnable = (m_pSelectedScope->XAxis.ScaleMode == smLogarithmic);
+	if(IDOK != dlg.DoModal())
+		return;
+
+	CAxisConfigHelper::PTR_AxisSettings pAxisSettings = pDoc->m_AxisConfigHelper.GetProductConfig(m_SelectProductType,m_SelectChannelType);
+	pAxisSettings->log_t = dlg.m_bLogEnable;
+	pAxisSettings->min = dlg.m_Min;
+	pAxisSettings->max = dlg.m_Max;
+	pDoc->m_AxisConfigHelper.SaveModify(m_SelectProductType,m_SelectChannelType);
+
+	m_pSelectedScope->XAxis.ScaleMode = pAxisSettings->log_t ? smLogarithmic : smLinear;
+	m_pSelectedScope->XAxis.ZoomTo(pAxisSettings->min,pAxisSettings->max,FALSE);
+	m_pSelectedScope->Hold = FALSE;
 }
 
 void CRadarFormView::OnAxisconfigureVerticalaxis()
@@ -690,21 +641,28 @@ void CRadarFormView::OnAxisconfigureVerticalaxis()
 
 void CRadarFormView::OnAxisconfigureLevelaxis()
 {
+	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)GetDocument();
 	CAxisSettingsDlg dlg;
-	if(m_pSelectedWaterfall != NULL)
-	{
-		dlg.m_Max = m_pSelectedWaterfall->Levels.Axis.Max;
-		dlg.m_Min = m_pSelectedWaterfall->Levels.Axis.Min;
-		dlg.m_Title = _T("ɫ������������");
-		dlg.m_bLogEnable = (m_pSelectedWaterfall->Levels.Axis.ScaleMode == smLogarithmic);
-		dlg.m_bLogCheckEnable = TRUE;
-		if(IDOK != dlg.DoModal())
-			return;
+	if(m_pSelectedWaterfall == NULL)
+		return;
 
-		m_pSelectedWaterfall->Levels.Axis.Max = dlg.m_Max;
-		m_pSelectedWaterfall->Levels.Axis.Min = dlg.m_Min;
-		m_pSelectedWaterfall->Levels.Axis.ScaleMode = dlg.m_bLogEnable ? smLogarithmic : smLinear;
-	}
+	dlg.m_Max = m_pSelectedWaterfall->Levels.Axis.Max;
+	dlg.m_Min = m_pSelectedWaterfall->Levels.Axis.Min;
+	dlg.m_Title = _T("É«Ìõ×ø±êÖáÉèÖÃ");
+	dlg.m_bLogEnable = (m_pSelectedWaterfall->Levels.Axis.ScaleMode == smLogarithmic);
+	dlg.m_bLogCheckEnable = TRUE;
+	if(IDOK != dlg.DoModal())
+		return;
+
+	CAxisConfigHelper::PTR_AxisSettings pAxisSettings = pDoc->m_AxisConfigHelper.GetProductConfig(m_SelectProductType,m_SelectChannelType);
+	pAxisSettings->log_c = dlg.m_bLogEnable;
+	pAxisSettings->min = dlg.m_Min;
+	pAxisSettings->max = dlg.m_Max;
+	pDoc->m_AxisConfigHelper.SaveModify(m_SelectProductType,m_SelectChannelType);
+
+	m_pSelectedWaterfall->Levels.Axis.Max = pAxisSettings->max;
+	m_pSelectedWaterfall->Levels.Axis.Min = pAxisSettings->min;
+	m_pSelectedWaterfall->Levels.Axis.ScaleMode = pAxisSettings->log_c ? smLogarithmic : smLinear;
 }
 
 void CRadarFormView::OnAxisconfigureAixsAllReset()
@@ -723,8 +681,6 @@ void CRadarFormView::OnAxisconfigureAixsAllReset()
 
 void CRadarFormView::OnAxisconfigureExportImg()
 {
-	CRadar_wspDoc *pDoc = (CRadar_wspDoc *)GetDocument();
-	CAxisSettingsDlg dlg;
 	CFileDialog f(FALSE);
 	if(f.DoModal() != IDOK)
 		return;
@@ -735,7 +691,32 @@ void CRadarFormView::OnAxisconfigureExportImg()
 	}
 	else if(m_pSelectedScope != NULL)
 	{
-		m_pSelectedWaterfall->SaveToBitmap(f.GetPathName());
+		m_pSelectedScope->SaveToBitmap(f.GetPathName());
 	}
 	else return;	
+}
+
+void CRadarFormView::OnAxisconfigurePrint()
+{
+	if(m_pSelectedWaterfall != NULL)
+	{
+		m_pSelectedWaterfall->Print();
+	}
+	else if(m_pSelectedScope != NULL)
+	{
+		m_pSelectedScope->Print();
+	}
+	else return;	
+}
+
+void CRadarFormView::OnAxisconfigureTable()
+{
+	if(m_pHookedRecord == NULL)
+		return;
+
+	CRecordDlg *pDlg = new CRecordDlg();
+	pDlg->Create(IDD_RECORDDLG,this);
+	pDlg->ShowWindow(SW_SHOW);
+	pDlg->CenterWindow();
+	pDlg->DisplayRecord(m_SelectProductType,m_pHookedRecord);
 }

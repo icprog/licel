@@ -98,6 +98,7 @@
 #pragma comment(lib,"../Release/LicelAcq.lib")
 #endif
 #include "../LicelAcq/LicelAcqCtl.h"
+#include <afxdlgs.h>
 
 #define WM_DATABROWSER_LISTUPDATE WM_USER+0x01
 #define WM_CAPTURETASK_EVENT WM_USER+0x03

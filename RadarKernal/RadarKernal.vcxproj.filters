@@ -42,9 +42,6 @@
     <ClCompile Include="ProgressDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="StandardFormatter.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -63,9 +60,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ProgressDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="StandardFormatter.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
