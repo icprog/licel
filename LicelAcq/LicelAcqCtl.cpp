@@ -19,6 +19,9 @@ typedef struct LicalAcqParams
 	HWND m_hMsgWnd;
 	unsigned int m_acccount;
 	unsigned int m_curvepoint;
+	unsigned int m_TrigType;
+	unsigned int m_InputRangeType;
+	unsigned int m_DiscriminatorLevel;
 }LicalAcqParams,*PTR_LicalAcqParams;
 
 double* Licel_analog_pBuf[Licel_Card_TR_Count];
@@ -87,7 +90,7 @@ int ConfigAcq()
 	return 0;
 }
 
-int LicelAcq_Start(unsigned int acccount,unsigned int curvepoint,HWND hMsgWnd)
+int LicelAcq_Start(unsigned int acccount,unsigned int curvepoint,unsigned int trig,unsigned int input_range,unsigned int discriminator_level,HWND hMsgWnd)
 {
 	Licel_analog_MSW = new unsigned short[curvepoint+1];
 	Licel_analog_LSW = new unsigned short[curvepoint+1];
@@ -121,6 +124,9 @@ int LicelAcq_Start(unsigned int acccount,unsigned int curvepoint,HWND hMsgWnd)
 	gb_Licel_pLicelAcqParams = new LicalAcqParams;
 	gb_Licel_pLicelAcqParams->m_acccount = acccount;
 	gb_Licel_pLicelAcqParams->m_curvepoint = curvepoint;
+	gb_Licel_pLicelAcqParams->m_TrigType = trig;
+	gb_Licel_pLicelAcqParams->m_InputRangeType = input_range;
+	gb_Licel_pLicelAcqParams->m_DiscriminatorLevel = discriminator_level;
 	gb_Licel_pLicelAcqParams->m_hMsgWnd = hMsgWnd;
 
 	gb_Licel_bAcqCtl = TRUE;

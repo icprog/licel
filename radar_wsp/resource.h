@@ -59,16 +59,21 @@
 #define IDI_BLACK_ICON                  174
 #define IDI_GREEN_ICON                  175
 #define IDD_LICELSETTINGSDLG            179
+#define IDD_STATIONSETTINGSDLG          180
+#define IDD_DIALOG2                     181
+#define IDD_ALGSETTINGSDLG              181
 #define IDC_RECORDLIST                  1000
 #define IDC_EDIT1                       1002
 #define IDC_COMBO5                      1002
 #define IDC_EDIT_INITFW                 1002
+#define IDC_EDIT_FACTORY                1002
 #define IDC_SEARCH                      1003
 #define IDC_EDIT2                       1003
 #define IDC_RESAMPLECNTEDIT             1003
 #define IDC_EDIT_FY                     1003
 #define IDC_EDIT_LOGINPWD               1003
 #define IDC_EDIT_INITFY                 1003
+#define IDC_EDIT_ID                     1003
 #define IDC_DATETIMEPICKER1             1004
 #define IDC_EDIT3                       1004
 #define IDC_DATESTARTPICKER             1004
@@ -76,6 +81,7 @@
 #define IDC_EDIT_DBURL                  1004
 #define IDC_EDIT_TARFW                  1004
 #define IDC_TIMEPICKER_START            1004
+#define IDC_EDIT_MODULE                 1004
 #define IDC_DATETIMEPICKER2             1005
 #define IDC_EDIT4                       1005
 #define IDC_DATEENDPICKER               1005
@@ -83,14 +89,16 @@
 #define IDC_EDIT_STEP                   1005
 #define IDC_EDIT_TARFY                  1005
 #define IDC_EDIT_REPEATCNT              1005
+#define IDC_EDIT_LONGITUDE              1005
 #define IDC_COMBO2                      1006
 #define IDC_SAVEPATHEDIT                1006
 #define IDC_COMBO_CONDUCTOR2            1006
 #define IDC_EDIT_STEPANGLE              1006
-#define IDC_EDIT5                       1006
+#define IDC_EDIT_LATITUDE               1006
 #define IDC_COMBO3                      1007
 #define IDC_EDIT_DBNAME                 1007
 #define IDC_EDIT_STEPANGLE2             1007
+#define IDC_EDIT_ALTITUDE               1007
 #define IDC_TIMESTARTPICKER             1008
 #define IDC_EDIT_DBUSR                  1008
 #define IDC_TIMEPICKER_END              1008
@@ -151,9 +159,16 @@
 #define IDD_RECORDDLG                   1072
 #define IDC_LIST                        1073
 #define IDC_COMBO_TRIGTYPE              1074
-#define IDC_COMBO6                      1075
 #define IDC_COMBO_INPUTRANGE            1075
-#define IDC_SPIN1                       1076
+#define IDC_LIST_CHANNEL                1077
+#define IDC_EDIT_DISCRIMINATOR_LEVEL    1078
+#define IDC_EDIT_SAMPLE_FREQ            1079
+#define IDC_EDIT_LASER_FREQ             1080
+#define IDC_EDIT_CURVE_POINT            1081
+#define IDC_EDIT_CURVE_FREQ             1082
+#define IDC_LEVEL_SPIN                  1083
+#define IDC_STATIC_STATION              1084
+#define IDC_STATIC_RADAR                1085
 #define ID_DATA_LOCALFILES              32774
 #define ID_DATA_DATABASE                32775
 #define ID_PRODUCT_SIGNAL_1ST           32779
@@ -374,9 +389,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        180
+#define _APS_NEXT_RESOURCE_VALUE        182
 #define _APS_NEXT_COMMAND_VALUE         33004
-#define _APS_NEXT_CONTROL_VALUE         1077
+#define _APS_NEXT_CONTROL_VALUE         1086
 #define _APS_NEXT_SYMED_VALUE           123
 #endif
 #endif

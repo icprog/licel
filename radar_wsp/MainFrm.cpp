@@ -11,6 +11,7 @@
 #include "SaveSettingsDlg.h"
 #include "TaskEditDlg.h"
 #include "LicelSettingsPage.h"
+#include "StationSettingsPage.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -711,12 +712,16 @@ void CMainFrame::OnOptionAdvance()
 	CLicelSettingsPage licelSettingsPage;
 	ps.AddPage(&licelSettingsPage);
 
+	CStationSettingsPage stationSettingsPage;
+	ps.AddPage(&stationSettingsPage);
+
 	ps.SetResizable();
 	ps.SetPageSize(CSize(250, 180));
 
 	if(ps.DoModal() == IDOK)
 	{
-		//licelSettingsPage.SaveConfigs();
+		licelSettingsPage.SaveConfigs();
+		//stationSettingsPage.SaveConfigs();
 	}
 }
 
@@ -751,6 +756,7 @@ void CMainFrame::OnCaptureSingle()
 	m_pCaptureTaskDlg->ShowWindow(SW_SHOW);
 	m_pCaptureTaskDlg->CenterWindow();
 }
+
 void CMainFrame::OnCaptureScheduler()
 {
 	

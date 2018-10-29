@@ -9,6 +9,8 @@ char* CProductHelper::PRODUCT_FORMAT[] = {"%.0f","%.0f","%.2f","%.2f","%.0f","%.
 char* CProductHelper::PRODUCT_UNIT[] = {"","","","","m","","m","","m",""};
 char* CProductHelper::PRODUCT_NAME_FORMAT[] = {"原始信号:%.0f","散射系数:%.0f","消光系数:%.2f","退偏振比:%.2f","云信息:%.0fm","光学厚度:%.2f","边界层高度:%.0fm","垂直能见度:%.2f","污染物混合层高度:%.2f","颗粒物质量浓度:%.2f"};
 char* CProductHelper::PRODUCT_NAME_UNIT[] = {"原始信号","散射系数","消光系数","退偏振比","云信息(m)","光学厚度","边界层高度(m)","垂直能见度","污染物混合层高度(m)","颗粒物质量浓度"};
+char* CProductHelper::WAVE_STATE[] = {"无偏振","平行","垂直","拉曼"};
+
 unsigned int CProductHelper::CHANNEL_WAVE_LENGTH[] = {355,532,532};
 CProductHelper::ChannelWaveState CProductHelper::CHANNEL_WAVE_STATE[] = {CProductHelper::ChannelWaveState_N,
 															CProductHelper::ChannelWaveState_P,

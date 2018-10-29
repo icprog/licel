@@ -132,6 +132,9 @@
     <ClInclude Include="LicelSettingsPage.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="StationSettingsPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="radar_wsp.cpp">
@@ -186,6 +189,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="LicelSettingsPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StationSettingsPage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

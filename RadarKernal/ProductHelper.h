@@ -38,6 +38,7 @@ public:
 		ChannelWaveState_N,
 		ChannelWaveState_P,
 		ChannelWaveState_S,
+		ChannelWaveState_Laman,
 		ChannelWaveState_Sum
 	}ChannelWaveState;
 
@@ -47,6 +48,8 @@ public:
 	static char* PRODUCT_UNIT[ProductType_Sum];
 	static char* PRODUCT_NAME_FORMAT[ProductType_Sum];
 	static char* PRODUCT_NAME_UNIT[ProductType_Sum];
+	static char* WAVE_STATE[ChannelWaveState_Sum];
+
 	static unsigned int CHANNEL_WAVE_LENGTH[ProductChannelType_Sum];
 	static ChannelWaveState CHANNEL_WAVE_STATE[ProductChannelType_Sum];
 

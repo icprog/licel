@@ -13,6 +13,6 @@
 
 #define WM_CAPTUREEVENT WM_USER+0x02
 
-extern "C" __declspec(dllexport) int LicelAcq_Start(unsigned int acccount,unsigned int curvepoint,HWND hMsgWnd);
+extern "C" __declspec(dllexport) int LicelAcq_Start(unsigned int acccount,unsigned int curvepoint,unsigned int trig,unsigned int input_range,unsigned int discriminator_level,HWND hMsgWnd);
 extern "C" __declspec(dllexport) bool LicelAcq_GetData(double** pData,int arraysize);
 extern "C" __declspec(dllexport) void LicelAcq_Stop();
